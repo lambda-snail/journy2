@@ -27,9 +27,13 @@ find_package(unofficial-sqlite3 REQUIRED)
 
 add_executable(journy2 WIN32
     source/main.cpp
+    source/ui/journymainframe.cpp include/ui/journymainframe.h
 )
 
-target_include_directories(journy2 PRIVATE ${wxWidgets_SOURCE_DIR}/include)
+target_include_directories(journy2
+        PRIVATE
+        ${CMAKE_SOURCE_DIR}/include
+        ${wxWidgets_SOURCE_DIR}/include)
 
 target_link_libraries(journy2
         PRIVATE
