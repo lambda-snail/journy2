@@ -4,6 +4,10 @@
 JournyMainFrame::JournyMainFrame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
     wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 {
+
+}
+
+void JournyMainFrame::SetUpUi() {
     SetSize(wxSize(640, 480));
     SetTitle(wxT("Journy"));
 
@@ -28,7 +32,7 @@ JournyMainFrame::JournyMainFrame(wxWindow* parent, wxWindowID id, const wxString
 
     panel_1 = new wxPanel(this, wxID_ANY);
     sizer_4->Add(panel_1, 1, wxEXPAND, 0);
-    
+
     SetSizer(main_divider);
     Layout();
 }
