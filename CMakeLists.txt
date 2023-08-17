@@ -28,6 +28,7 @@ find_package(unofficial-sqlite3 REQUIRED)
 add_executable(journy2 WIN32
     source/main.cpp
     source/ui/journymainframe.cpp include/ui/journymainframe.h
+    source/journal/entry.cpp include/journal/entry.h
 )
 
 target_include_directories(journy2
