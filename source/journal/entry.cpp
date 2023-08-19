@@ -14,12 +14,9 @@ todo::JournalEntry::JournalEntry(JournalEntry&& rhs) noexcept
     Content = rhs.Content;
 }
 
-todo::JournalEntry::JournalEntry(int id, wxDateTime date, wxString const& content) : Id{id}, Date{date}, Content(content)
-{}
+todo::JournalEntry::JournalEntry(int id, wxDateTime date, wxString const& content) : Id{id}, Date{date}, Content(content) {}
 
-todo::JournalEntry::JournalEntry(wxDateTime date, wxString const& content) : Id{-1}, Date{date}, Content(content) {} {
-
-}
+todo::JournalEntry::JournalEntry(wxDateTime date, wxString const& content) : Id{-1}, Date{date}, Content(content) {}
 
 wxDateTime todo::JournalEntry::getDate() const
 {
@@ -50,13 +47,13 @@ wxString todo::JournalEntry::toString() const
     return Date.FormatDate();
 }
 
-int todo::JournalEntry::getId() const
+long long todo::JournalEntry::getId() const
 {
     return Id;
 }
 
 
-void todo::JournalEntry::setId(int newId)
+void todo::JournalEntry::setId(long long newId)
 {
     if (Id == newId)
         return;

@@ -16,8 +16,8 @@ namespace todo {
 
         JournalEntry& operator=(todo::JournalEntry const& other) = default;
 
-        [[nodiscard]] int getId() const;
-        void setId(int newId);
+        [[nodiscard]] long long getId() const;
+        void setId(long long newId);
 
         [[nodiscard]] wxDateTime getDate() const;
         void setDate(wxDateTime const& newDate);
@@ -28,7 +28,7 @@ namespace todo {
         [[nodiscard]] wxString toString() const;
     private:
 
-        int Id { };
+        long long Id { };
         wxDateTime Date { };
         wxString Content { };
     };

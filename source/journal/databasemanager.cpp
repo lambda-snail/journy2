@@ -1,6 +1,7 @@
 #include "journal/databasemanager.h"
 #include "journal/entry.h"
 #include "wx/log.h"
+#include "wx/intl.h"
 
 todo::DatabaseManager::DatabaseManager(const wxString &path)
 {
@@ -21,29 +22,37 @@ bool todo::DatabaseManager::AddNewJournalEntry(JournalEntry &entry) const
 {
     sqlite3_stmt* sql = p_CreateJournalEntiresQuery;
 
-    sqlite3_bind_text64(sql, 1, entry.getContent().c_str(), -1, SQLITE_STATIC, SQLITE_UTF8);
-    sqlite3_bind_text64(sql, 2, entry.getDate().FormatDate(), -1, SQLITE_STATIC, SQLITE_UTF8);
+    wxCharBuffer strStringValue = entry.getContent().ToUTF8();
+    const char* localStringValue = strStringValue;
+
+    wxCharBuffer dateStringValue = entry.getDate().FormatDate().ToUTF8();
+    const char* localDateValue = dateStringValue;
+
+    sqlite3_bind_text(sql, 1, localStringValue, -1, SQLITE_STATIC);
+    sqlite3_bind_text(sql, 2, localDateValue, -1, SQLITE_STATIC);
 
     int status = sqlite3_step( sql );
     switch(status)
     {
         case SQLITE_DONE:
-            sqlite3_exec(
-                p_Db,
-                "select last_insert_rowid()",
-                [](void* entry, int argc, char** data, char** azColName) // https://stackoverflow.com/questions/31146713/sqlite3-exec-callback-function-clarification
-                {
-                    auto entry_ptr = static_cast<JournalEntry*>(entry);
-                    entry_ptr->setId( std::stoi( data[0] ));
-                    return 5;
-                },
-                &entry, nullptr);
+            entry.setId( sqlite3_last_insert_rowid(p_Db) );
+            //sqlite3_exec(
+            //    p_Db,
+            //    "select last_insert_rowid()",
+            //    [](void* entry, int argc, char** data, char** azColName) // https://stackoverflow.com/questions/31146713/sqlite3-exec-callback-function-clarification
+            //    {
+            //        auto entry_ptr = static_cast<JournalEntry*>(entry);
+            //        entry_ptr->setId( std::stoi( data[0] ));
+            //        return 5;
+            //    },
+            //    &entry, nullptr);
             break;
         default:
             wxLogError("Unhandled status code in sql query: " + wxString::Format(wxT("%i"), status));
             break;
     }
 
+    //return false;
     sqlite3_clear_bindings( sql );
     sqlite3_reset( sql );
     return status == SQLITE_DONE;
@@ -143,15 +152,25 @@ bool todo::DatabaseManager::AddNewJournalEntry(JournalEntry &entry) const
 //}
 
 void todo::DatabaseManager::InitQueries() {
-    sqlite3_prepare_v2(
+    int status = sqlite3_prepare_v2(
             p_Db,
             "insert into journalentries (content, date) values (:content, :date)",
             -1,
             &p_CreateJournalEntiresQuery,
             nullptr
     );
+
+    wxLogMessage("Status for prepared statement: " + wxString::Format(wxT("%i"), status));
 }
 
 void todo::DatabaseManager::ClearQueries() {
     sqlite3_finalize(p_CreateJournalEntiresQuery);
 }
+
+//wxString data;
+//const char* dbdata;
+//
+//For unicode build, simply do:
+//
+//dbdata = data.mb_str(wxConvUTF8);
+//data = wxString(dbdata,wxConvUTF8);
