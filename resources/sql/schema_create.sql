@@ -1,0 +1,1 @@
+create table journalentries(id integer primary key, date text, content text);
