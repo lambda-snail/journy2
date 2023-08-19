@@ -36,11 +36,17 @@ add_executable(journy2 WIN32
 target_include_directories(journy2
         PRIVATE
         ${CMAKE_SOURCE_DIR}/include
-        ${wxWidgets_SOURCE_DIR}/include)
+        ${wxWidgets_SOURCE_DIR}/include
+)
+
+if(LINUX)
+    set(LINUX_LINK_LIBS X11)
+endif()
 
 target_link_libraries(journy2
         PRIVATE
         wx::base
         wx::core
+        ${LINUX_LINK_LIBS}
         unofficial::sqlite3::sqlite3
 )
