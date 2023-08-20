@@ -29,7 +29,7 @@ public:
 protected:
     // begin wxGlade: JournyMainFrame::attributes
     wxMenuBar* frame_menubar;
-    wxListCtrl* journal_entry_list;
+    wxListView* journal_entry_list;
     wxCalendarCtrl* calendar_ctrl_1;
     wxPanel* panel_1;
     // end wxGlade
