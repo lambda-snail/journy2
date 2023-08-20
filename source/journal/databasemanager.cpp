@@ -72,6 +72,49 @@ std::vector<int> todo::DatabaseManager::GetListOfJournalYears() const
     return {};
 }
 
+std::vector<todo::JournalEntry>
+todo::DatabaseManager::GetAllJournalEntriesBetween(wxDateTime min, wxDateTime max)
+{
+    wxCharBuffer minValueBuffer = min.FormatISODate().ToUTF8();
+    const char* minValueString = minValueBuffer;
+
+    wxCharBuffer maxValueBuffer = max.FormatISODate().ToUTF8();
+    const char* maxValueString = maxValueBuffer;
+
+    auto* sql = p_GetEntriesBetweenDatesQuery;
+    sqlite3_bind_text(sql, 1, minValueString, -1, SQLITE_STATIC);
+    sqlite3_bind_text(sql, 2, maxValueString, -1, SQLITE_STATIC);
+
+    std::vector<JournalEntry> entries;
+    int status = sqlite3_step( sql );
+    while(status == SQLITE_ROW)
+    {
+        long long id = sqlite3_column_int64(sql, 0);
+        unsigned char const* date_str = sqlite3_column_text(sql, 1);
+        unsigned char const* content_str = sqlite3_column_text(sql, 2);
+
+        wxDateTime date; date.ParseDate(date_str);
+        entries.emplace_back(id, date, content_str);
+
+        status = sqlite3_step( sql );
+    }
+
+    sqlite3_clear_bindings( sql );
+    sqlite3_reset( sql );
+
+    if(status == SQLITE_DONE)
+    {
+        return entries;
+    }
+    else
+    {
+        wxLogError(sqlite3_errmsg(p_Db));
+        return {};
+    }
+}
+
+
+
 //bool todo::DatabaseManager::DeleteJournalEntry(JournalEntry const& entry) const
 //{
 //    QSqlQuery query;
@@ -89,40 +132,9 @@ std::vector<int> todo::DatabaseManager::GetListOfJournalYears() const
 //}
 //
 
-//
-//std::unique_ptr<std::vector<todo::JournalEntry>>
-//todo::DatabaseManager::GetAllJournalEntriesBetween(QDate min, QDate max)
-//{
-//    QSqlQuery query("select id, date, content from journalentries where date >= '2022-01-01' and date <= '2024-01-01'");
-//    //query.prepare("select id, date, content from journalentries where date >= :min and date <= :max");
-//    //query.prepare("select id, date, content from journalentries where date >= '2022-01-01' and date <= '2024-01-01'");
-//    //query.bindValue(":min", min.toString("yyyy-MM-dd"));
-//    //query.bindValue(":max", max.toString("yyyy-MM-dd"));
-//
-//    if(query.exec())
-//    {
-//        qDebug() << query.lastQuery();
-//
-//        if(query.next())
-//        {
-//            std::unique_ptr<std::vector<JournalEntry>> entries = std::unique_ptr<std::vector<JournalEntry>>(
-//                    new std::vector<JournalEntry>()
-//            );
-//
-//            do
-//            {
-//                entries->push_back(JournalEntry(query.value(0).toInt(), query.value(1).toDate(), query.value(2).toString()));
-//            }
-//            while(query.next());
-//
-//            qDebug() << "Fetched " << entries->size() << " journal entries between" << min << " and " << max;
-//            return std::move(entries);
-//        }
-//    }
-//
-//    qDebug() << "Unable to fetch journal entries: " << query.lastError();
-//    return nullptr;
-//}
+
+
+
 //
 //void todo::DatabaseManager::UpdateJournalEntryContent(QString const& entryContent, int entryId) const
 //{
@@ -141,7 +153,7 @@ std::vector<int> todo::DatabaseManager::GetListOfJournalYears() const
 //}
 
 void todo::DatabaseManager::InitQueries() {
-    int status = sqlite3_prepare_v2(
+    sqlite3_prepare_v2(
             p_Db,
             "insert into journalentries (content, date) values (:content, :date)",
             -1,
@@ -149,17 +161,16 @@ void todo::DatabaseManager::InitQueries() {
             nullptr
     );
 
-    wxLogMessage("Status for prepared statement: " + wxString::Format(wxT("%i"), status));
+    sqlite3_prepare_v2(
+            p_Db,
+            "select id, date, content from journalentries where date >= :min and date <= :max",
+            -1,
+            &p_GetEntriesBetweenDatesQuery,
+            nullptr
+    );
 }
 
 void todo::DatabaseManager::ClearQueries() {
     sqlite3_finalize(p_CreateJournalEntiresQuery);
+    sqlite3_finalize(p_GetEntriesBetweenDatesQuery);
 }
-
-//wxString data;
-//const char* dbdata;
-//
-//For unicode build, simply do:
-//
-//dbdata = data.mb_str(wxConvUTF8);
-//data = wxString(dbdata,wxConvUTF8);

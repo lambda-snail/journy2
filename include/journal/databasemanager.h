@@ -21,13 +21,14 @@ namespace todo {
 
         [[nodiscard]] std::vector<int> GetListOfJournalYears() const;
 
-//        std::unique_ptr<std::vector<JournalEntry>>
-//        GetAllJournalEntriesBetween(wxDateTime min, wxDateTime max);
+        [[nodiscard]] std::vector<JournalEntry>
+        GetAllJournalEntriesBetween(wxDateTime min, wxDateTime max);
 
     private:
         sqlite3* p_Db;
 
         sqlite3_stmt* p_CreateJournalEntiresQuery;
+        sqlite3_stmt* p_GetEntriesBetweenDatesQuery;
 
         void InitQueries();
         void ClearQueries();
