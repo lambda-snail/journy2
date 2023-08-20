@@ -19,7 +19,7 @@ namespace todo {
 //        void UpdateJournalEntryContent(wxString const& entryContent, int entryId) const;
 //        void GetAllJournalEntries();
 
-        //std::vector<int> GetListOfJournalYears() const;
+        [[nodiscard]] std::vector<int> GetListOfJournalYears() const;
 
 //        std::unique_ptr<std::vector<JournalEntry>>
 //        GetAllJournalEntriesBetween(wxDateTime min, wxDateTime max);

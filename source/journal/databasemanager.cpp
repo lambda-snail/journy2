@@ -25,7 +25,7 @@ bool todo::DatabaseManager::AddNewJournalEntry(JournalEntry &entry) const
     wxCharBuffer strStringValue = entry.getContent().ToUTF8();
     const char* localStringValue = strStringValue;
 
-    wxCharBuffer dateStringValue = entry.getDate().FormatDate().ToUTF8();
+    wxCharBuffer dateStringValue = entry.getDate().FormatISODate().ToUTF8();
     const char* localDateValue = dateStringValue;
 
     sqlite3_bind_text(sql, 1, localStringValue, -1, SQLITE_STATIC);
@@ -36,16 +36,6 @@ bool todo::DatabaseManager::AddNewJournalEntry(JournalEntry &entry) const
     {
         case SQLITE_DONE:
             entry.setId( sqlite3_last_insert_rowid(p_Db) );
-            //sqlite3_exec(
-            //    p_Db,
-            //    "select last_insert_rowid()",
-            //    [](void* entry, int argc, char** data, char** azColName) // https://stackoverflow.com/questions/31146713/sqlite3-exec-callback-function-clarification
-            //    {
-            //        auto entry_ptr = static_cast<JournalEntry*>(entry);
-            //        entry_ptr->setId( std::stoi( data[0] ));
-            //        return 5;
-            //    },
-            //    &entry, nullptr);
             break;
         default:
             wxLogError("Unhandled status code in sql query: " + wxString::Format(wxT("%i"), status));
@@ -56,6 +46,30 @@ bool todo::DatabaseManager::AddNewJournalEntry(JournalEntry &entry) const
     sqlite3_clear_bindings( sql );
     sqlite3_reset( sql );
     return status == SQLITE_DONE;
+}
+
+std::vector<int> todo::DatabaseManager::GetListOfJournalYears() const
+{
+    char* error_message;
+    std::vector<int> years_vector;
+    int status = sqlite3_exec(
+        p_Db,
+        "select distinct SUBSTRING(date, 0, 5) from journalentries",
+        [](void* vector_ptr, int argc, char** data, char** azColName) // https://stackoverflow.com/questions/31146713/sqlite3-exec-callback-function-clarification
+        {
+            auto years_vector = static_cast<std::vector<int>*>(vector_ptr);
+            years_vector->push_back( std::stoi( data[0] ));
+            return SQLITE_OK;
+        },
+        &years_vector, &error_message);
+
+    if(status == SQLITE_OK)
+    {
+        return years_vector;
+    }
+
+    wxLogError(error_message);
+    return {};
 }
 
 //bool todo::DatabaseManager::DeleteJournalEntry(JournalEntry const& entry) const
@@ -74,32 +88,7 @@ bool todo::DatabaseManager::AddNewJournalEntry(JournalEntry &entry) const
 //    return false;
 //}
 //
-//QList<int> todo::DatabaseManager::GetListOfJournalYears() const
-//{
-//    QSqlQuery query;
-//    query.prepare("select distinct SUBSTRING(date, 0, 5) from journalentries");
-//
-//    QList<int> yearList;
-//    if(query.exec())
-//    {
-//        qDebug() << query.lastQuery();
-//
-//        if(query.next())
-//        {
-//            do
-//            {
-//                yearList.append(query.value(0).toInt());
-//            }
-//            while(query.next());
-//
-//            qDebug() << "Fetched " << yearList.size() << " entry years";
-//            return yearList;
-//        }
-//    }
-//
-//    qDebug() << "Unable to fetch list of entry years: " << query.lastError();
-//    return yearList;
-//}
+
 //
 //std::unique_ptr<std::vector<todo::JournalEntry>>
 //todo::DatabaseManager::GetAllJournalEntriesBetween(QDate min, QDate max)
