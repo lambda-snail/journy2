@@ -9,11 +9,18 @@
 #include <wx/calctrl.h>
 #include <wx/listctrl.h>
 #include <memory>
+#include <utility>
 // end wxGlade
 
 // begin wxGlade: ::extracode
 // end wxGlade
 
+struct EntryListData
+{
+    EntryListData(todo::JournalEntry e, long i) : entry(std::move(e)), index(i) { }
+    todo::JournalEntry entry;
+    long index;
+};
 
 class JournyMainFrame: public wxFrame {
 public:
@@ -27,12 +34,13 @@ public:
     void InitListData();
 
 protected:
-    // begin wxGlade: JournyMainFrame::attributes
     wxMenuBar* frame_menubar;
     wxListCtrl* journal_entry_list;
     wxCalendarCtrl* calendar_ctrl_1;
-    wxPanel* panel_1;
-    // end wxGlade
+    class wxWebView* webview;
+
+    std::vector<EntryListData> entries;
+    //wxPanel* panel_1;
 
 private:
     std::shared_ptr<todo::DatabaseManager> p_Db;
