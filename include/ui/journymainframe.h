@@ -34,6 +34,9 @@ protected:
     wxPanel* panel_1;
     // end wxGlade
 
+private:
     std::shared_ptr<todo::DatabaseManager> p_Db;
+
+    void OnListSelectedHandler(wxListEvent& event);
 };
 

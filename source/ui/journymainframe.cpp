@@ -4,7 +4,7 @@
 JournyMainFrame::JournyMainFrame(todo::DatabaseManager* db, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
     wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE), p_Db(db)
 {
-
+    Bind( wxEVT_LIST_ITEM_SELECTED, &JournyMainFrame::OnListSelectedHandler, this );
 }
 
 void JournyMainFrame::SetUpUi() {
@@ -50,5 +50,9 @@ void JournyMainFrame::InitListData() {
         long itemIndex = journal_entry_list->InsertItem(0, entry.getDate().FormatISODate()); //want this for col. 1
         //WxListCtrl1->SetItem(itemIndex, 1, "18:00"); //want this for col. 2
     }
+}
+
+void JournyMainFrame::OnListSelectedHandler(wxListEvent &event) {
+    wxLogMessage("Id %i selected!", static_cast<int>(event.GetIndex()));
 }
 
