@@ -163,7 +163,7 @@ void todo::DatabaseManager::InitQueries() {
 
     sqlite3_prepare_v2(
             p_Db,
-            "select id, date, content from journalentries where date >= :min and date <= :max",
+            "select id, date, content from journalentries where date >= :min and date <= :max order by date desc",
             -1,
             &p_GetEntriesBetweenDatesQuery,
             nullptr
