@@ -1,14 +1,13 @@
 cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
 
 
-
 project(journy2 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(wxWidgets_USE_STATIC 1)
+set(wxWidgets_USE_STATIC ON)
 set(wxBUILD_SHARED OFF)
-
+set(wxUSE_WEBVIEW ON)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -47,6 +46,7 @@ target_link_libraries(journy2
         PRIVATE
         wx::base
         wx::core
+        wx::webview # https://forums.wxwidgets.org/viewtopic.php?t=43828
         ${LINUX_LINK_LIBS}
         unofficial::sqlite3::sqlite3
 )
