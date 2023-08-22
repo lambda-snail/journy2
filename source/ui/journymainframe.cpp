@@ -1,6 +1,8 @@
 #include <wx/wx.h>
 #include <wx/webview.h>
 
+#include <iostream>
+
 #include "ui/journymainframe.h"
 
 JournyMainFrame::JournyMainFrame(todo::DatabaseManager* db, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
@@ -33,35 +35,38 @@ void JournyMainFrame::SetUpUi() {
     auto* sizer_4 = new wxBoxSizer(wxVERTICAL);
     main_divider->Add(sizer_4, 6, wxEXPAND, 0);
 
-    //panel_1 = new wxPanel(this, wxID_ANY);
-    //sizer_4->Add(panel_1, 1, wxEXPAND, 0);
-
     webview = wxWebView::New();
     webview->Create(this, wxID_ANY);
     sizer_4->Add(webview, 1, wxEXPAND, 0);
-    //panel_1->AddChild(webview);
 
     SetSizer(main_divider);
     Layout();
 }
 
 void JournyMainFrame::InitListData() {
-    //journal_entry_list
     wxDateTime min, max;
     min.ParseDate("2023-01-01");
     max.ParseDate("2023-12-31");
 
-    for(auto const& entry : p_Db->GetAllJournalEntriesBetween(min, max))
+    entries.clear();
+    entries = p_Db->GetAllJournalEntriesBetween(min, max);
+    for(int i = 0; i < entries.size(); ++i)
     {
-        long itemIndex = journal_entry_list->InsertItem(0, entry.getDate().FormatISODate());
-        //WxListCtrl1->SetItem(itemIndex, 1, "18:00"); //want this for col. 2
-        entries.emplace_back(entry, itemIndex);
+        todo::JournalEntry& entry = entries[i];
+
+        wxListItem item;
+        item.SetId(static_cast<long>(entry.getId()));
+        item.SetColumn(0);
+        item.SetText(entry.getDate().FormatISODate());
+        item.SetData(&entry);
+
+        journal_entry_list->InsertItem(item);
     }
 }
 
 void JournyMainFrame::OnListSelectedHandler(wxListEvent &event) {
-    //wxLogMessage("Id %i selected!", static_cast<int>(event.GetIndex()));
-    int index = static_cast<int>(event.GetIndex()); // Should be safe -- no one has THAT many journal entries (?)
-    webview->SetPage(entries[index].entry.getContent(), "/");
+    auto const& item = event.GetItem();
+    auto const* entry = reinterpret_cast<todo::JournalEntry const*>(item.GetData());
+    webview->SetPage(entry->getContent(), "/");
 }
 
