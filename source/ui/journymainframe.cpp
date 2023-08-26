@@ -1,9 +1,11 @@
+#include "ui/journymainframe.h"
+#include <marky/Marky.h>
+#include <marky/backend/html_backend.h>
+
 #include <wx/wx.h>
 #include <wx/webview.h>
 
 #include <iostream>
-
-#include "ui/journymainframe.h"
 
 JournyMainFrame::JournyMainFrame(todo::DatabaseManager* db, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
     wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE), p_Db(db)
@@ -67,6 +69,12 @@ void JournyMainFrame::InitListData() {
 void JournyMainFrame::OnListSelectedHandler(wxListEvent &event) {
     auto const& item = event.GetItem();
     auto const* entry = reinterpret_cast<todo::JournalEntry const*>(item.GetData());
-    webview->SetPage(entry->getContent(), "/");
-}
 
+    marky::Marky marky;
+    marky::backend::html::MarkdownToHtml backend;
+
+    marky.process_markdown(&backend, entry->getContent().utf8_string());
+    auto html = backend.get_html();
+
+    webview->SetPage(html, "/");
+}

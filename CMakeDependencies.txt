@@ -1,0 +1,38 @@
+include(FetchContent)
+
+
+#---- wxWidgets
+
+set(wxWidgets_USE_STATIC ON)
+set(wxBUILD_SHARED OFF)
+set(wxUSE_WEBVIEW ON)
+
+FetchContent_Declare(
+        wxWidgets
+        GIT_REPOSITORY "https://github.com/wxWidgets/wxWidgets.git"
+        GIT_TAG v3.2.2.1
+)
+
+FetchContent_GetProperties(wxwidgets)
+if(NOT wxwidgets_POPULATED)
+    FetchContent_Populate(wxwidgets)
+    add_subdirectory(${wxwidgets_SOURCE_DIR} ${wxwidgets_BUILD_DIR})
+endif()
+
+
+#---- marky
+
+FetchContent_Declare(
+        marky
+        GIT_REPOSITORY "https://github.com/lambda-snail/marky.git"
+        GIT_TAG v0.3.5
+)
+
+FetchContent_MakeAvailable(marky)
+
+#FetchContent_GetProperties(marky)
+#if(NOT marky_POPULATED)
+#    FetchContent_Populate(marky)
+#    add_subdirectory(${marky_SOURCE_DIR} ${marky_BUILD_DIR})
+#endif()
+
