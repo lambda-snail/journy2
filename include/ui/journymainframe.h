@@ -29,11 +29,16 @@ protected:
     wxMenuBar* frame_menubar;
     wxListView* journal_entry_list;
     wxCalendarCtrl* calendar_ctrl_1;
-    class wxWebView* webview;
     class wxToolBar* toolbar;
-    class wxBoxSizer* main_divider;
 
-    JournalEntryUiState State { JournalEntryUiState::ReadingMode };
+    class wxBoxSizer* main_divider;
+    class wxSplitterWindow* editor_splitter;
+    bool bSplitVertically { true };
+
+    class wxWebView* webview;
+    class wxTextCtrl* markdown_editor;
+
+    JournalEntryUiState EditState {JournalEntryUiState::ReadingMode };
     std::vector<todo::JournalEntry> entries;
 
     void create_editor_area();
@@ -42,5 +47,6 @@ private:
     std::shared_ptr<todo::DatabaseManager> p_Db;
 
     void OnListSelectedHandler(wxListEvent& event);
+    void OnEnterSplitEditMode(wxCommandEvent& event);
 };
 

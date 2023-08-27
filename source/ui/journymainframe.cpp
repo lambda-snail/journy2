@@ -1,5 +1,6 @@
 #include "ui/journymainframe.h"
 #include "ui/icons.h"
+#include "wx/splitter.h"
 #include <marky/Marky.h>
 #include <marky/backend/html_backend.h>
 
@@ -88,36 +89,53 @@ void JournyMainFrame::create_toolbar() {
     style |= wxTB_RIGHT;
     style &= ~wxTB_NO_TOOLTIPS;
 
+    auto reading_mode_id = wxWindow::NewControlId();
+    auto split_edit_mode_id = wxWindow::NewControlId();
+    auto exclusive_edit_mode_id = wxWindow::NewControlId();
+
     toolbar = CreateToolBar(style);
-    toolbar->AddTool(wxID_ANY, wxT("Reading Mode"), toolBarBitmaps[0]);
-    toolbar->AddTool(wxID_ANY, wxT("Split Edit Mode"), toolBarBitmaps[1]);
-    toolbar->AddTool(wxID_ANY, wxT("Exclusive Edit Mode"), toolBarBitmaps[2]);
+    toolbar->AddTool(reading_mode_id, wxT("Reading Mode"), toolBarBitmaps[0]);
+    toolbar->AddTool(split_edit_mode_id, wxT("Split Edit Mode"), toolBarBitmaps[1]);
+    toolbar->AddTool(exclusive_edit_mode_id, wxT("Exclusive Edit Mode"), toolBarBitmaps[2]);
     toolbar->AddSeparator();
     toolbar->Realize();
 
-//    Connect(wxID_EXIT, wxEVT_COMMAND_TOOL_CLICKED,
-//            wxCommandEventHandler(Toolbar::OnQuit));
+    Connect(split_edit_mode_id, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(JournyMainFrame::OnEnterSplitEditMode));
 }
 
 void JournyMainFrame::create_editor_area()
 {
-
     auto* sizer_4 = new wxBoxSizer(wxVERTICAL);
     main_divider->Add(sizer_4, 6, wxEXPAND, 0);
 
-    webview = wxWebView::New();
-    webview->Create(this, wxID_ANY);
-    sizer_4->Add(webview, 1, wxEXPAND, 0);
+    editor_splitter = new wxSplitterWindow(this, -1, wxPoint(0, 0), wxSize(400, 400));
 
-//    splitter = new wxSplitterWindow(this, -1, wxPoint(0, 0),
-//                                    wxSize(400, 400), wxSP_3D);
-//
-//    leftWindow = new MyWindow(splitter);
-//    leftWindow->SetScrollbars(20, 20, 50, 50);
-//
-//    rightWindow = new MyWindow(splitter);
-//    rightWindow->SetScrollbars(20, 20, 50, 50);
-//    rightWindow->Show(false);
-//
-//    splitter->Initialize(leftWindow);
+    webview = wxWebView::New();
+    webview->Create(editor_splitter, wxID_ANY);
+
+    markdown_editor = new wxTextCtrl(editor_splitter, wxID_ANY);
+    markdown_editor->Show(false);
+
+    sizer_4->Add(editor_splitter, 1, wxEXPAND, 0);
+    editor_splitter->Initialize(webview);
+}
+
+// Todo: add setting for having text editor to the right?
+void JournyMainFrame::OnEnterSplitEditMode(wxCommandEvent& WXUNUSED(event))
+{
+    if ( editor_splitter->IsSplit() )
+        editor_splitter->Unsplit();
+    webview->Show(true);
+    markdown_editor->Show(true);
+
+    if(bSplitVertically)
+    {
+        editor_splitter->SplitVertically( markdown_editor, webview );
+    }
+    else
+    {
+        editor_splitter->SplitHorizontally( markdown_editor, webview );
+    }
+
+    EditState = JournalEntryUiState::SplitEditMode;
 }
