@@ -10,6 +10,12 @@
 #include <memory>
 #include <utility>
 
+enum class JournalEntryUiState
+{
+    ReadingMode,
+    SplitEditMode,
+    ExclusiveEditMode
+};
 
 class JournyMainFrame: public wxFrame {
 public:
@@ -24,10 +30,13 @@ protected:
     wxListView* journal_entry_list;
     wxCalendarCtrl* calendar_ctrl_1;
     class wxWebView* webview;
-    class wxToolBar *toolbar;
+    class wxToolBar* toolbar;
+    class wxBoxSizer* main_divider;
 
+    JournalEntryUiState State { JournalEntryUiState::ReadingMode };
     std::vector<todo::JournalEntry> entries;
 
+    void create_editor_area();
     void create_toolbar();
 private:
     std::shared_ptr<todo::DatabaseManager> p_Db;

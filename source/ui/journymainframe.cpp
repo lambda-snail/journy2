@@ -24,7 +24,7 @@ void JournyMainFrame::SetUpUi() {
     wxglade_tmp_menu = new wxMenu();
     frame_menubar->Append(wxglade_tmp_menu, wxT("File"));
     SetMenuBar(frame_menubar);
-    auto* main_divider = new wxBoxSizer(wxHORIZONTAL);
+    main_divider = new wxBoxSizer(wxHORIZONTAL);
     auto* left_menu_sizer = new wxBoxSizer(wxVERTICAL);
     main_divider->Add(left_menu_sizer, 0, wxEXPAND | wxRIGHT, 4);
 
@@ -36,12 +36,7 @@ void JournyMainFrame::SetUpUi() {
     calendar_ctrl_1 = new wxCalendarCtrl(this, wxID_ANY, wxDefaultDateTime);
     left_menu_sizer->Add(calendar_ctrl_1, 0, 0, 0);
 
-    auto* sizer_4 = new wxBoxSizer(wxVERTICAL);
-    main_divider->Add(sizer_4, 6, wxEXPAND, 0);
-
-    webview = wxWebView::New();
-    webview->Create(this, wxID_ANY);
-    sizer_4->Add(webview, 1, wxEXPAND, 0);
+    create_editor_area();
 
     SetSizer(main_divider);
     Layout();
@@ -102,4 +97,27 @@ void JournyMainFrame::create_toolbar() {
 
 //    Connect(wxID_EXIT, wxEVT_COMMAND_TOOL_CLICKED,
 //            wxCommandEventHandler(Toolbar::OnQuit));
+}
+
+void JournyMainFrame::create_editor_area()
+{
+
+    auto* sizer_4 = new wxBoxSizer(wxVERTICAL);
+    main_divider->Add(sizer_4, 6, wxEXPAND, 0);
+
+    webview = wxWebView::New();
+    webview->Create(this, wxID_ANY);
+    sizer_4->Add(webview, 1, wxEXPAND, 0);
+
+//    splitter = new wxSplitterWindow(this, -1, wxPoint(0, 0),
+//                                    wxSize(400, 400), wxSP_3D);
+//
+//    leftWindow = new MyWindow(splitter);
+//    leftWindow->SetScrollbars(20, 20, 50, 50);
+//
+//    rightWindow = new MyWindow(splitter);
+//    rightWindow->SetScrollbars(20, 20, 50, 50);
+//    rightWindow->Show(false);
+//
+//    splitter->Initialize(leftWindow);
 }
