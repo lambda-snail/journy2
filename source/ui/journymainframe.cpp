@@ -70,14 +70,19 @@ void JournyMainFrame::OnListSelected(wxListEvent &event) {
     auto const& item = event.GetItem();
     auto const* entry = reinterpret_cast<todo::JournalEntry const*>(item.GetData());
 
-    marky::Marky marky;
-    marky::backend::html::MarkdownToHtml backend;
+    SetWebViewContent(entry->getContent());
 
-    marky.process_markdown(&backend, entry->getContent().utf8_string());
+    markdown_editor->ChangeValue(entry->getContent());
+}
+
+void JournyMainFrame::SetWebViewContent(wxString const& markdown) {
+    marky::Marky marky;                             // TODO: Move to member variable
+    marky::backend::html::MarkdownToHtml backend;   // TODO: Move to member variable
+
+    marky.process_markdown(&backend, markdown.utf8_string());
     auto html = backend.get_html();
 
     webview->SetPage(html, "/");
-    markdown_editor->ChangeValue(entry->getContent());
 }
 
 void JournyMainFrame::create_toolbar() {
@@ -116,6 +121,7 @@ void JournyMainFrame::create_editor_area()
 
     markdown_editor = new wxTextCtrl(editor_splitter, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
     markdown_editor->Show(false);
+    markdown_editor->Bind(wxEVT_TEXT, &JournyMainFrame::OnTextChange, this);
 
     sizer_4->Add(editor_splitter, 1, wxEXPAND, 0);
     editor_splitter->Initialize(webview);
@@ -139,4 +145,9 @@ void JournyMainFrame::OnEnterSplitEditMode(wxCommandEvent& WXUNUSED(event))
     }
 
     EditState = JournalEntryUiState::SplitEditMode;
+}
+
+void JournyMainFrame::OnTextChange(wxCommandEvent &event)
+{
+    SetWebViewContent(markdown_editor->GetValue());
 }
