@@ -114,7 +114,7 @@ void JournyMainFrame::create_editor_area()
     webview = wxWebView::New();
     webview->Create(editor_splitter, wxID_ANY);
 
-    markdown_editor = new wxTextCtrl(editor_splitter, wxID_ANY);
+    markdown_editor = new wxTextCtrl(editor_splitter, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
     markdown_editor->Show(false);
 
     sizer_4->Add(editor_splitter, 1, wxEXPAND, 0);
