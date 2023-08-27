@@ -46,7 +46,7 @@ protected:
 private:
     std::shared_ptr<todo::DatabaseManager> p_Db;
 
-    void OnListSelectedHandler(wxListEvent& event);
+    void OnListSelected(wxListEvent& event);
     void OnEnterSplitEditMode(wxCommandEvent& event);
 };
 
