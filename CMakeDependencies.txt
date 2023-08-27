@@ -29,10 +29,3 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(marky)
-
-#FetchContent_GetProperties(marky)
-#if(NOT marky_POPULATED)
-#    FetchContent_Populate(marky)
-#    add_subdirectory(${marky_SOURCE_DIR} ${marky_BUILD_DIR})
-#endif()
-

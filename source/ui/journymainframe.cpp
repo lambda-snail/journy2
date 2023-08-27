@@ -1,4 +1,5 @@
 #include "ui/journymainframe.h"
+#include "ui/icons.h"
 #include <marky/Marky.h>
 #include <marky/backend/html_backend.h>
 
@@ -6,6 +7,7 @@
 #include <wx/webview.h>
 
 #include <iostream>
+
 
 JournyMainFrame::JournyMainFrame(todo::DatabaseManager* db, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
     wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE), p_Db(db)
@@ -43,6 +45,8 @@ void JournyMainFrame::SetUpUi() {
 
     SetSizer(main_divider);
     Layout();
+
+    create_toolbar();
 }
 
 void JournyMainFrame::InitListData() {
@@ -77,4 +81,25 @@ void JournyMainFrame::OnListSelectedHandler(wxListEvent &event) {
     auto html = backend.get_html();
 
     webview->SetPage(html, "/");
+}
+
+void JournyMainFrame::create_toolbar() {
+    wxBitmapBundle toolBarBitmaps[3];
+    toolBarBitmaps[0] = wxBitmapBundle::FromSVG(svg_body_text, wxSize(16, 16));
+    toolBarBitmaps[1] = wxBitmapBundle::FromSVG(svg_layout_split, wxSize(16, 16));
+    toolBarBitmaps[2] = wxBitmapBundle::FromSVG(svg_pencil_square, wxSize(16, 16));
+
+    long style = 0;
+    style |= wxTB_RIGHT;
+    style &= ~wxTB_NO_TOOLTIPS;
+
+    toolbar = CreateToolBar(style);
+    toolbar->AddTool(wxID_ANY, wxT("Reading Mode"), toolBarBitmaps[0]);
+    toolbar->AddTool(wxID_ANY, wxT("Split Edit Mode"), toolBarBitmaps[1]);
+    toolbar->AddTool(wxID_ANY, wxT("Exclusive Edit Mode"), toolBarBitmaps[2]);
+    toolbar->AddSeparator();
+    toolbar->Realize();
+
+//    Connect(wxID_EXIT, wxEVT_COMMAND_TOOL_CLICKED,
+//            wxCommandEventHandler(Toolbar::OnQuit));
 }

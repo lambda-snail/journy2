@@ -24,9 +24,11 @@ protected:
     wxListView* journal_entry_list;
     wxCalendarCtrl* calendar_ctrl_1;
     class wxWebView* webview;
+    class wxToolBar *toolbar;
 
     std::vector<todo::JournalEntry> entries;
 
+    void create_toolbar();
 private:
     std::shared_ptr<todo::DatabaseManager> p_Db;
 

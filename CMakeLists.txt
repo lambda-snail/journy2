@@ -15,6 +15,7 @@ add_executable(journy2 WIN32
     source/journal/entry.cpp include/journal/entry.h
         include/journal/databasemanager.h
         source/journal/databasemanager.cpp
+        include/ui/icons.h
 )
 
 target_include_directories(journy2
