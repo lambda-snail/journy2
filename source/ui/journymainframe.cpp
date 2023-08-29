@@ -1,11 +1,12 @@
-#include "ui/journymainframe.h"
-#include "ui/icons.h"
-#include "wx/splitter.h"
 #include <marky/Marky.h>
 #include <marky/backend/html_backend.h>
 
 #include <wx/wx.h>
+#include "wx/splitter.h"
 #include <wx/webview.h>
+
+#include "ui/journymainframe.h"
+#include "ui/icons.h"
 
 #include <iostream>
 
