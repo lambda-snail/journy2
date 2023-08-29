@@ -6,16 +6,15 @@ project(journy2 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 include(CMakeDependencies.txt)
-
 find_package(unofficial-sqlite3 REQUIRED)
 
-add_executable(journy2 WIN32
+add_executable(journy2
     source/main.cpp
     source/ui/journymainframe.cpp include/ui/journymainframe.h
     source/journal/entry.cpp include/journal/entry.h
-        include/journal/databasemanager.h
-        source/journal/databasemanager.cpp
-        include/ui/icons.h
+    source/journal/databasemanager.cpp include/journal/databasemanager.h
+
+    include/ui/icons.h
 )
 
 target_include_directories(journy2
