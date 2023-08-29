@@ -8,6 +8,11 @@ set(CMAKE_CXX_STANDARD 20)
 include(CMakeDependencies.txt)
 find_package(unofficial-sqlite3 REQUIRED)
 
+if(WIN32)
+    set(wxUSE_RC_MANIFEST 1)
+    set(MAYBE_WIN_MANIFEST ${CMAKE_SOURCE_DIR}/resources/win_manifest.rc)
+endif()
+
 add_executable(journy2
     source/main.cpp
     source/ui/journymainframe.cpp include/ui/journymainframe.h
@@ -15,6 +20,7 @@ add_executable(journy2
     source/journal/databasemanager.cpp include/journal/databasemanager.h
 
     include/ui/icons.h
+    ${MAYBE_WIN_MANIFEST}
 )
 
 target_include_directories(journy2
