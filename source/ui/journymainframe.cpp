@@ -241,5 +241,5 @@ void JournyMainFrame::OnNewEntry(wxCommandEvent &event)
         InitListData(); // For simplicity, we just reload everything in this case
     }
 
-    wxMessageBox("Entry Created", "Journal entry has been created!", wxOK);
+    wxMessageBox("Journal entry has been created!", "Entry Created", wxOK);
 }
