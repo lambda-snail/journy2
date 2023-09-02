@@ -14,9 +14,9 @@ namespace todo {
         ~DatabaseManager();
 
         bool AddNewJournalEntry(JournalEntry& entry) const;
+        void UpdateJournalEntryContent(wxString const& entryContent, int entryId) const;
 //        bool DeleteJournalEntry(JournalEntry const& entry) const;
 //
-//        void UpdateJournalEntryContent(wxString const& entryContent, int entryId) const;
 //        void GetAllJournalEntries();
 
         [[nodiscard]] std::vector<int> GetListOfJournalYears() const;
@@ -29,6 +29,7 @@ namespace todo {
 
         sqlite3_stmt* p_CreateJournalEntiresQuery;
         sqlite3_stmt* p_GetEntriesBetweenDatesQuery;
+        sqlite3_stmt* p_UpdateEntryContentQuery;
 
         void InitQueries();
         void ClearQueries();

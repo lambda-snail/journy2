@@ -113,7 +113,24 @@ todo::DatabaseManager::GetAllJournalEntriesBetween(wxDateTime min, wxDateTime ma
     }
 }
 
+void todo::DatabaseManager::UpdateJournalEntryContent(QString const& entryContent, int entryId) const
+{
+    wxCharBuffer contentBuffer = entryContent.FormatISODate().ToUTF8();
+    const char* contentString = contentBuffer;
 
+    auto* sql = p_UpdateEntryContentQuery;
+    sqlite3_bind_text(sql, 1, contentString, -1, SQLITE_STATIC);
+    sqlite3_bind_int(sql, 2, entryId);
+
+    int status = sqlite3_step( sql );
+    if(status != SQLITE_DONE)
+    {
+        wxLogError(sqlite3_errmsg(p_Db));
+    }
+
+    sqlite3_clear_bindings( sql );
+    sqlite3_reset( sql );
+}
 
 //bool todo::DatabaseManager::DeleteJournalEntry(JournalEntry const& entry) const
 //{
@@ -132,26 +149,6 @@ todo::DatabaseManager::GetAllJournalEntriesBetween(wxDateTime min, wxDateTime ma
 //}
 //
 
-
-
-
-//
-//void todo::DatabaseManager::UpdateJournalEntryContent(QString const& entryContent, int entryId) const
-//{
-//    QSqlQuery query;
-//    query.prepare("update journalentries set content = (:content) where id = (:id)");
-//    query.bindValue(":content", entryContent);
-//    query.bindValue(":id", entryId);
-//
-//    if(query.exec())
-//    {
-//        qDebug() << query.lastQuery();
-//        return;
-//    }
-//
-//    qDebug() << "Unable to update journal entry: " << query.lastError();
-//}
-
 void todo::DatabaseManager::InitQueries() {
     sqlite3_prepare_v2(
             p_Db,
@@ -168,9 +165,18 @@ void todo::DatabaseManager::InitQueries() {
             &p_GetEntriesBetweenDatesQuery,
             nullptr
     );
+
+    sqlite3_prepare_v2(
+            p_Db,
+            "update journalentries set content = (:content) where id = (:id)",
+            -1,
+            &p_UpdateEntryContentQuery,
+            nullptr
+    );
 }
 
 void todo::DatabaseManager::ClearQueries() {
     sqlite3_finalize(p_CreateJournalEntiresQuery);
     sqlite3_finalize(p_GetEntriesBetweenDatesQuery);
+    sqlite3_finalize(p_UpdateEntryContentQuery);
 }
