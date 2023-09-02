@@ -32,7 +32,7 @@ void JournyMainFrame::SetUpUi() {
     left_menu_sizer->Add(journal_entry_list, 1, wxEXPAND, 0);
     InitListData();
 
-    calendar_ctrl_1 = new wxCalendarCtrl(this, wxID_ANY, wxDefaultDateTime);
+    calendar_ctrl_1 = new wxCalendarCtrl(this, wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxCAL_SHOW_WEEK_NUMBERS);
     left_menu_sizer->Add(calendar_ctrl_1, 0, 0, 0);
 
     create_editor_area();
