@@ -27,8 +27,8 @@ void JournyMainFrame::SetUpUi() {
     auto* left_menu_sizer = new wxBoxSizer(wxVERTICAL);
     main_divider->Add(left_menu_sizer, 0, wxEXPAND | wxRIGHT, 4);
 
-    journal_entry_list = new wxListView(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_HRULES | wxLC_REPORT | wxLC_VRULES);
-    journal_entry_list->AppendColumn(wxT("Journal Entries"), wxLIST_FORMAT_LEFT, -1);
+    journal_entry_list = new wxListView(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+    journal_entry_list->AppendColumn(wxT("Journal Entries"), wxLIST_FORMAT_LEFT, 200);
     left_menu_sizer->Add(journal_entry_list, 1, wxEXPAND, 0);
     InitListData();
 
