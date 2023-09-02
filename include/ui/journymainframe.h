@@ -13,8 +13,7 @@
 enum class JournalEntryUiState
 {
     ReadingMode,
-    SplitEditMode,
-    ExclusiveEditMode
+    SplitEditMode
 };
 
 class JournyMainFrame: public wxFrame {
@@ -38,7 +37,7 @@ protected:
     class wxWebView* webview;
     class wxTextCtrl* markdown_editor;
 
-    JournalEntryUiState EditState {JournalEntryUiState::ReadingMode };
+    JournalEntryUiState EditState { JournalEntryUiState::ReadingMode };
     std::vector<todo::JournalEntry> entries;
 
     void create_menu();
@@ -48,6 +47,7 @@ private:
     std::shared_ptr<todo::DatabaseManager> p_Db;
 
     void OnListSelected(wxListEvent& event);
+    void OnEnterReadingMode(wxCommandEvent& event);
     void OnEnterSplitEditMode(wxCommandEvent& event);
     void OnTextChange(wxCommandEvent& event);
     void OnSave(wxCommandEvent& event);

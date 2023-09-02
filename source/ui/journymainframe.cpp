@@ -101,12 +101,12 @@ void JournyMainFrame::create_toolbar() {
 
     toolbar = CreateToolBar(style);
     toolbar->AddTool(reading_mode_id, wxT("Reading Mode"), toolBarBitmaps[0]);
-    toolbar->AddTool(split_edit_mode_id, wxT("Split Edit Mode"), toolBarBitmaps[1]);
-    toolbar->AddTool(exclusive_edit_mode_id, wxT("Exclusive Edit Mode"), toolBarBitmaps[2]);
+    toolbar->AddTool(split_edit_mode_id, wxT("Edit Mode"), toolBarBitmaps[1]);
     toolbar->AddSeparator();
     toolbar->AddTool(save_entry, wxT("Save"), toolBarBitmaps[3]);
     toolbar->Realize();
 
+    Connect(reading_mode_id, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(JournyMainFrame::OnEnterReadingMode));
     Connect(split_edit_mode_id, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(JournyMainFrame::OnEnterSplitEditMode));
     Connect(save_entry, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(JournyMainFrame::OnSave));
 }
@@ -180,16 +180,25 @@ void JournyMainFrame::create_menu() {
 
     auto const readingModeId = wxWindow::NewControlId();
     auto const splitEditModeId = wxWindow::NewControlId();
-    auto const exclusiveEditModeId = wxWindow::NewControlId();
     auto* edit_menu = new wxMenu();
-    auto const* readingModeItem = edit_menu->Append(readingModeId, _T("Reading Mode"));
-    auto const* splitEditModeItem = edit_menu->Append(splitEditModeId, _T("Split Edit Mode"));
-    auto const* exclusiveEditModeItem = edit_menu->Append(exclusiveEditModeId, _T("Exclusive Edit Mode"));
+    edit_menu->Append(readingModeId, _T("Reading Mode"));
+    edit_menu->Append(splitEditModeId, _T("Edit Mode"));
 
     frame_menubar->Append(file_menu, wxT("File"));
     frame_menubar->Append(edit_menu, wxT("Edit"));
     SetMenuBar(frame_menubar);
 
     Bind(wxEVT_MENU, &JournyMainFrame::OnEnterSplitEditMode, this, splitEditModeId);
+    Bind(wxEVT_MENU, &JournyMainFrame::OnEnterReadingMode, this, readingModeId);
+}
 
+void JournyMainFrame::OnEnterReadingMode(wxCommandEvent &event)
+{
+    if ( editor_splitter->IsSplit() )
+    {
+        editor_splitter->Unsplit(markdown_editor);
+    }
+
+    editor_splitter->Initialize(webview);
+    EditState = JournalEntryUiState::ReadingMode;
 }
