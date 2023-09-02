@@ -22,7 +22,8 @@ public:
 
     void SetUpUi();
 
-    void InitListData();
+    void InitListData(int year = wxDateTime::Today().GetYear());
+    void InitListData(wxDateTime min, wxDateTime max);
 
 protected:
     wxMenuBar* frame_menubar;
@@ -43,6 +44,9 @@ protected:
     void create_menu();
     void create_editor_area();
     void create_toolbar();
+
+    int currentDisplayYear { 0 };
+    wxCalendarCtrl* create_calendar();
 private:
     std::shared_ptr<todo::DatabaseManager> p_Db;
 
@@ -51,6 +55,8 @@ private:
     void OnEnterSplitEditMode(wxCommandEvent& event);
     void OnTextChange(wxCommandEvent& event);
     void OnSave(wxCommandEvent& event);
+
+    void OnCalendarSelectionChange(wxCalendarEvent& event);
 
     void SetWebViewContent(wxString const& markdown);
 };

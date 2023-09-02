@@ -32,7 +32,7 @@ void JournyMainFrame::SetUpUi() {
     left_menu_sizer->Add(journal_entry_list, 1, wxEXPAND, 0);
     InitListData();
 
-    calendar_ctrl_1 = new wxCalendarCtrl(this, wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxCAL_SHOW_WEEK_NUMBERS);
+    calendar_ctrl_1 = create_calendar();
     left_menu_sizer->Add(calendar_ctrl_1, 0, 0, 0);
 
     create_editor_area();
@@ -43,12 +43,19 @@ void JournyMainFrame::SetUpUi() {
     create_toolbar();
 }
 
-void JournyMainFrame::InitListData() {
-    wxDateTime min, max;
-    min.ParseDate("2023-01-01");
-    max.ParseDate("2023-12-31");
+void JournyMainFrame::InitListData(int year)
+{
+    wxDateTime min(1, wxDateTime::Month::Jan, year), max(31, wxDateTime::Month::Dec, year);
+    InitListData(min, max);
+    currentDisplayYear = year;
+}
+
+void JournyMainFrame::InitListData(wxDateTime min, wxDateTime max)
+{
+    assert(min <= max);
 
     entries.clear();
+    journal_entry_list->DeleteAllItems();
     entries = p_Db->GetAllJournalEntriesBetween(min, max);
     for(int i = 0; i < entries.size(); ++i)
     {
@@ -201,4 +208,22 @@ void JournyMainFrame::OnEnterReadingMode(wxCommandEvent &event)
 
     editor_splitter->Initialize(webview);
     EditState = JournalEntryUiState::ReadingMode;
+}
+
+wxCalendarCtrl* JournyMainFrame::create_calendar()
+{
+    auto* calendar = new wxCalendarCtrl(this, wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxCAL_SHOW_WEEK_NUMBERS);
+
+    calendar->Bind(wxEVT_CALENDAR_SEL_CHANGED, &JournyMainFrame::OnCalendarSelectionChange, this);
+
+    return calendar;
+}
+
+void JournyMainFrame::OnCalendarSelectionChange(wxCalendarEvent& event) {
+    if(currentDisplayYear == event.GetDate().GetYear())
+    {
+        return;
+    }
+
+    InitListData(event.GetDate().GetYear());
 }
