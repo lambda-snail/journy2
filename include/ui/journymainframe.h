@@ -41,6 +41,7 @@ protected:
     JournalEntryUiState EditState {JournalEntryUiState::ReadingMode };
     std::vector<todo::JournalEntry> entries;
 
+    void create_menu();
     void create_editor_area();
     void create_toolbar();
 private:

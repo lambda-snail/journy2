@@ -21,11 +21,8 @@ void JournyMainFrame::SetUpUi() {
     SetSize(wxSize(640, 480));
     SetTitle(wxT("Journy"));
 
-    frame_menubar = new wxMenuBar();
-    wxMenu *wxglade_tmp_menu;
-    wxglade_tmp_menu = new wxMenu();
-    frame_menubar->Append(wxglade_tmp_menu, wxT("File"));
-    SetMenuBar(frame_menubar);
+    create_menu();
+
     main_divider = new wxBoxSizer(wxHORIZONTAL);
     auto* left_menu_sizer = new wxBoxSizer(wxVERTICAL);
     main_divider->Add(left_menu_sizer, 0, wxEXPAND | wxRIGHT, 4);
@@ -171,4 +168,28 @@ void JournyMainFrame::OnSave(wxCommandEvent &event) {
         auto const* entry = reinterpret_cast<todo::JournalEntry*>(journal_entry_list->GetItemData(selected));
         p_Db->UpdateJournalEntryContent(*entry);
     }
+}
+
+void JournyMainFrame::create_menu() {
+    frame_menubar = new wxMenuBar();
+
+    auto* file_menu = new wxMenu();
+    file_menu->Append(wxID_SAVE, _T("Save"));
+    file_menu->AppendSeparator();
+    file_menu->Append(wxID_EXIT, _T("&Quit"));
+
+    auto const readingModeId = wxWindow::NewControlId();
+    auto const splitEditModeId = wxWindow::NewControlId();
+    auto const exclusiveEditModeId = wxWindow::NewControlId();
+    auto* edit_menu = new wxMenu();
+    auto const* readingModeItem = edit_menu->Append(readingModeId, _T("Reading Mode"));
+    auto const* splitEditModeItem = edit_menu->Append(splitEditModeId, _T("Split Edit Mode"));
+    auto const* exclusiveEditModeItem = edit_menu->Append(exclusiveEditModeId, _T("Exclusive Edit Mode"));
+
+    frame_menubar->Append(file_menu, wxT("File"));
+    frame_menubar->Append(edit_menu, wxT("Edit"));
+    SetMenuBar(frame_menubar);
+
+    Bind(wxEVT_MENU, &JournyMainFrame::OnEnterSplitEditMode, this, splitEditModeId);
+
 }
