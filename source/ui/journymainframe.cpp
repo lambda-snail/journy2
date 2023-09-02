@@ -32,8 +32,8 @@ void JournyMainFrame::SetUpUi() {
     left_menu_sizer->Add(journal_entry_list, 1, wxEXPAND, 0);
     InitListData();
 
-    calendar_ctrl_1 = create_calendar();
-    left_menu_sizer->Add(calendar_ctrl_1, 0, 0, 0);
+    calendar_ctrl = create_calendar();
+    left_menu_sizer->Add(calendar_ctrl, 0, 0, 0);
 
     create_editor_area();
 
@@ -181,6 +181,7 @@ void JournyMainFrame::create_menu() {
     frame_menubar = new wxMenuBar();
 
     auto* file_menu = new wxMenu();
+    file_menu->Append(wxID_NEW, _T("New Entry"));
     file_menu->Append(wxID_SAVE, _T("Save"));
     file_menu->AppendSeparator();
     file_menu->Append(wxID_EXIT, _T("&Quit"));
@@ -195,6 +196,7 @@ void JournyMainFrame::create_menu() {
     frame_menubar->Append(edit_menu, wxT("Edit"));
     SetMenuBar(frame_menubar);
 
+    Bind(wxEVT_MENU, &JournyMainFrame::OnNewEntry, this, wxID_NEW);
     Bind(wxEVT_MENU, &JournyMainFrame::OnEnterSplitEditMode, this, splitEditModeId);
     Bind(wxEVT_MENU, &JournyMainFrame::OnEnterReadingMode, this, readingModeId);
 }
@@ -226,4 +228,18 @@ void JournyMainFrame::OnCalendarSelectionChange(wxCalendarEvent& event) {
     }
 
     InitListData(event.GetDate().GetYear());
+}
+
+void JournyMainFrame::OnNewEntry(wxCommandEvent &event)
+{
+    auto selectedDate = calendar_ctrl->GetDate();
+    todo::JournalEntry newEntry(selectedDate, "");
+    p_Db->AddNewJournalEntry(newEntry);
+
+    if(selectedDate.GetYear() == currentDisplayYear)
+    {
+        InitListData(); // For simplicity, we just reload everything in this case
+    }
+
+    wxMessageBox("Entry Created", "Journal entry has been created!", wxOK);
 }

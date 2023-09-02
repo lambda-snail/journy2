@@ -28,7 +28,7 @@ public:
 protected:
     wxMenuBar* frame_menubar;
     wxListView* journal_entry_list;
-    wxCalendarCtrl* calendar_ctrl_1;
+    wxCalendarCtrl* calendar_ctrl;
     class wxToolBar* toolbar;
 
     class wxBoxSizer* main_divider;
@@ -59,5 +59,7 @@ private:
     void OnCalendarSelectionChange(wxCalendarEvent& event);
 
     void SetWebViewContent(wxString const& markdown);
+
+    void OnNewEntry(wxCommandEvent& event);
 };
 
