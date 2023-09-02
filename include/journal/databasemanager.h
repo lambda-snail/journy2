@@ -14,7 +14,7 @@ namespace todo {
         ~DatabaseManager();
 
         bool AddNewJournalEntry(JournalEntry& entry) const;
-        void UpdateJournalEntryContent(wxString const& entryContent, int entryId) const;
+        void UpdateJournalEntryContent(JournalEntry const& entry) const;
 //        bool DeleteJournalEntry(JournalEntry const& entry) const;
 //
 //        void GetAllJournalEntries();

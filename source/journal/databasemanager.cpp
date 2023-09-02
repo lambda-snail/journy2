@@ -113,14 +113,14 @@ todo::DatabaseManager::GetAllJournalEntriesBetween(wxDateTime min, wxDateTime ma
     }
 }
 
-void todo::DatabaseManager::UpdateJournalEntryContent(QString const& entryContent, int entryId) const
+void todo::DatabaseManager::UpdateJournalEntryContent(JournalEntry const& entry) const
 {
-    wxCharBuffer contentBuffer = entryContent.FormatISODate().ToUTF8();
+    wxCharBuffer contentBuffer = entry.getContent().ToUTF8();
     const char* contentString = contentBuffer;
 
     auto* sql = p_UpdateEntryContentQuery;
     sqlite3_bind_text(sql, 1, contentString, -1, SQLITE_STATIC);
-    sqlite3_bind_int(sql, 2, entryId);
+    sqlite3_bind_int(sql, 2, static_cast<int>(entry.getId()));
 
     int status = sqlite3_step( sql );
     if(status != SQLITE_DONE)

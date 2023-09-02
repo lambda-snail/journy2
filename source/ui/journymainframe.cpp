@@ -87,10 +87,11 @@ void JournyMainFrame::SetWebViewContent(wxString const& markdown) {
 }
 
 void JournyMainFrame::create_toolbar() {
-    wxBitmapBundle toolBarBitmaps[3];
+    wxBitmapBundle toolBarBitmaps[4];
     toolBarBitmaps[0] = wxBitmapBundle::FromSVG(svg_body_text, wxSize(16, 16));
     toolBarBitmaps[1] = wxBitmapBundle::FromSVG(svg_layout_split, wxSize(16, 16));
     toolBarBitmaps[2] = wxBitmapBundle::FromSVG(svg_pencil_square, wxSize(16, 16));
+    toolBarBitmaps[3] = wxBitmapBundle::FromSVG(svg_box_arrow_down, wxSize(16, 16));
 
     long style = 0;
     style |= wxTB_RIGHT;
@@ -99,15 +100,18 @@ void JournyMainFrame::create_toolbar() {
     auto reading_mode_id = wxWindow::NewControlId();
     auto split_edit_mode_id = wxWindow::NewControlId();
     auto exclusive_edit_mode_id = wxWindow::NewControlId();
+    auto save_entry = wxWindow::NewControlId();
 
     toolbar = CreateToolBar(style);
     toolbar->AddTool(reading_mode_id, wxT("Reading Mode"), toolBarBitmaps[0]);
     toolbar->AddTool(split_edit_mode_id, wxT("Split Edit Mode"), toolBarBitmaps[1]);
     toolbar->AddTool(exclusive_edit_mode_id, wxT("Exclusive Edit Mode"), toolBarBitmaps[2]);
     toolbar->AddSeparator();
+    toolbar->AddTool(save_entry, wxT("Save"), toolBarBitmaps[3]);
     toolbar->Realize();
 
     Connect(split_edit_mode_id, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(JournyMainFrame::OnEnterSplitEditMode));
+    Connect(save_entry, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(JournyMainFrame::OnSave));
 }
 
 void JournyMainFrame::create_editor_area()
@@ -151,4 +155,20 @@ void JournyMainFrame::OnEnterSplitEditMode(wxCommandEvent& WXUNUSED(event))
 void JournyMainFrame::OnTextChange(wxCommandEvent &event)
 {
     SetWebViewContent(markdown_editor->GetValue());
+
+    long selected = journal_entry_list->GetFocusedItem();
+    if(selected > 0) {
+        auto* entry = reinterpret_cast<todo::JournalEntry*>(journal_entry_list->GetItemData(selected));
+        entry->setContent(markdown_editor->GetValue());
+    }
+}
+
+void JournyMainFrame::OnSave(wxCommandEvent &event) {
+    //markdown_editor->GetValue()
+    long selected = journal_entry_list->GetFocusedItem();
+    if(selected > 0)
+    {
+        auto const* entry = reinterpret_cast<todo::JournalEntry*>(journal_entry_list->GetItemData(selected));
+        p_Db->UpdateJournalEntryContent(*entry);
+    }
 }

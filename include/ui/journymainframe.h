@@ -49,6 +49,7 @@ private:
     void OnListSelected(wxListEvent& event);
     void OnEnterSplitEditMode(wxCommandEvent& event);
     void OnTextChange(wxCommandEvent& event);
+    void OnSave(wxCommandEvent& event);
 
     void SetWebViewContent(wxString const& markdown);
 };
