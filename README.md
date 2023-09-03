@@ -17,7 +17,7 @@
 
 ## Feature Wishlist
 
-- Todo tems managed in a kanban board
+- Todo items managed in a kanban board
 
 # Building
 
