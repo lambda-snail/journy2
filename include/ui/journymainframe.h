@@ -18,7 +18,7 @@ enum class JournalEntryUiState
 
 class JournyMainFrame: public wxFrame {
 public:
-    JournyMainFrame(todo::DatabaseManager* db, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_FRAME_STYLE);
+    JournyMainFrame(std::shared_ptr<todo::DatabaseManager> db, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_FRAME_STYLE);
 
     void SetUpUi();
 
@@ -26,6 +26,7 @@ public:
     void InitListData(wxDateTime min, wxDateTime max);
 
 protected:
+    class wxConfig* config;
     wxMenuBar* frame_menubar;
     wxListView* journal_entry_list;
     wxCalendarCtrl* calendar_ctrl;

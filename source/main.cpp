@@ -1,4 +1,5 @@
 #include <wx/wx.h>
+#include <wx/config.h>
 
 #include <memory>
 #include "ui/journymainframe.h"
@@ -11,18 +12,21 @@ public:
     bool OnInit() override;
 private:
     //std::unique_ptr<todo::DatabaseManager> p_Db;
-    todo::DatabaseManager* p_Db;
+    std::shared_ptr<todo::DatabaseManager> p_Db;
+    std::shared_ptr<wxConfig> config;
 };
 
 IMPLEMENT_APP(MyApp)
 
 bool MyApp::OnInit()
 {
+    config = std::make_shared<wxConfig>("journy");
+
     // Temporary solution during initial development
 #ifdef WIN32
-    p_Db = new todo::DatabaseManager(R"(C:\Projects\cpp\journy2\resources\todo.db)");
+    p_Db = std::shared_ptr<todo::DatabaseManager>(R"(C:\Projects\cpp\journy2\resources\todo.db)");
 #else
-    p_Db = new todo::DatabaseManager(R"(/home/niclas/projects/cpp/journy2/resources/todo.db)");
+    p_Db = std::make_shared<todo::DatabaseManager>(R"(/home/niclas/projects/cpp/journy2/resources/todo.db)");
 #endif
 
     wxInitAllImageHandlers();
