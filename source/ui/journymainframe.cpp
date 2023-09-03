@@ -104,7 +104,6 @@ void JournyMainFrame::create_toolbar() {
 
     auto reading_mode_id = wxWindow::NewControlId();
     auto split_edit_mode_id = wxWindow::NewControlId();
-    auto exclusive_edit_mode_id = wxWindow::NewControlId();
     auto save_entry = wxWindow::NewControlId();
 
     toolbar = CreateToolBar(style);
@@ -162,7 +161,7 @@ void JournyMainFrame::OnTextChange(wxCommandEvent &event)
     SetWebViewContent(markdown_editor->GetValue());
 
     long selected = journal_entry_list->GetFocusedItem();
-    if(selected > 0) {
+    if(selected >= 0) {
         auto* entry = reinterpret_cast<todo::JournalEntry*>(journal_entry_list->GetItemData(selected));
         entry->setContent(markdown_editor->GetValue());
     }
@@ -171,7 +170,7 @@ void JournyMainFrame::OnTextChange(wxCommandEvent &event)
 void JournyMainFrame::OnSave(wxCommandEvent &event) {
     //markdown_editor->GetValue()
     long selected = journal_entry_list->GetFocusedItem();
-    if(selected > 0)
+    if(selected >= 0)
     {
         auto const* entry = reinterpret_cast<todo::JournalEntry*>(journal_entry_list->GetItemData(selected));
         p_Db->UpdateJournalEntryContent(*entry);
