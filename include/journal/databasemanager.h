@@ -10,7 +10,7 @@ namespace todo {
     class DatabaseManager
     {
     public:
-        explicit DatabaseManager(wxString const& path);
+        explicit DatabaseManager(wxString const& path, bool shouldInitDb = false);
         ~DatabaseManager();
 
         bool AddNewJournalEntry(JournalEntry& entry) const;
@@ -24,6 +24,7 @@ namespace todo {
         [[nodiscard]] std::vector<JournalEntry>
         GetAllJournalEntriesBetween(wxDateTime min, wxDateTime max);
 
+        static const wxString config_last_db_location;
     private:
         sqlite3* p_Db;
 
@@ -33,5 +34,7 @@ namespace todo {
 
         void InitQueries();
         void ClearQueries();
+
+        wxString database_path;
     };
 }

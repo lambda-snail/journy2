@@ -3,13 +3,30 @@
 #include "wx/log.h"
 #include "wx/intl.h"
 
-todo::DatabaseManager::DatabaseManager(const wxString &path)
+todo::DatabaseManager::DatabaseManager(const wxString &path, bool shouldInitDb)
 {
     if( SQLITE_OK != sqlite3_open(path.c_str(), &p_Db))
     {
         wxLogError("Unable to open database on path: " + path);
     }
 
+    if(shouldInitDb)
+    {
+        char const* error;
+        int status = sqlite3_exec(
+            p_Db,
+            "create table journalentries(id integer primary key, date text, content text);",
+            nullptr,
+            nullptr,
+            nullptr);
+
+        if(status != SQLITE_OK)
+        {
+            wxLogError("Unable to initialize database at " + path + ". exec returned with code " + std::to_string(status));
+        }
+    }
+
+    database_path = path;
     InitQueries();
 }
 

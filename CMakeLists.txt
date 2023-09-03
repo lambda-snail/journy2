@@ -19,6 +19,8 @@ add_executable(journy2
     source/journal/entry.cpp include/journal/entry.h
     source/journal/databasemanager.cpp include/journal/databasemanager.h
 
+    source/config_strings.cpp include/config_strings.h
+
     include/ui/icons.h
     ${MAYBE_WIN_MANIFEST}
 )
