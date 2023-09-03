@@ -168,7 +168,6 @@ void JournyMainFrame::OnTextChange(wxCommandEvent &event)
 }
 
 void JournyMainFrame::OnSave(wxCommandEvent &event) {
-    //markdown_editor->GetValue()
     long selected = journal_entry_list->GetFocusedItem();
     if(selected >= 0)
     {
