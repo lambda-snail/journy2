@@ -2,6 +2,7 @@
 #include <marky/backend/html_backend.h>
 
 #include <wx/wx.h>
+#include "wx/notifmsg.h"
 #include "wx/splitter.h"
 #include <wx/webview.h>
 
@@ -173,6 +174,8 @@ void JournyMainFrame::OnSave(wxCommandEvent &event) {
     {
         auto const* entry = reinterpret_cast<todo::JournalEntry*>(journal_entry_list->GetItemData(selected));
         p_Db->UpdateJournalEntryContent(*entry);
+        wxNotificationMessage msg("Entry Saved","The entry has been saved!");
+        msg.Show();
     }
 }
 
@@ -240,5 +243,7 @@ void JournyMainFrame::OnNewEntry(wxCommandEvent &event)
         InitListData(); // For simplicity, we just reload everything in this case
     }
 
-    wxMessageBox("Journal entry has been created!", "Entry Created", wxOK);
+    wxNotificationMessage msg("Entry Created","Journal entry has been created!");
+    msg.Show();
+    //wxMessageBox("Journal entry has been created!", "Entry Created", wxOK);
 }
