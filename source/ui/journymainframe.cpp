@@ -9,10 +9,11 @@
 #include "ui/icons.h"
 
 #include <iostream>
+#include <utility>
 
 
 JournyMainFrame::JournyMainFrame(std::shared_ptr<todo::DatabaseManager> db, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
-    wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE), p_Db(db)
+    wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE), p_Db(std::move(db))
 {
     Bind(wxEVT_LIST_ITEM_SELECTED, &JournyMainFrame::OnListSelected, this );
 }
