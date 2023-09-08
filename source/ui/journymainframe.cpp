@@ -8,6 +8,7 @@
 
 #include "ui/journymainframe.h"
 #include "ui/icons.h"
+#include "version.h"
 
 #include <iostream>
 #include <utility>
@@ -210,12 +211,17 @@ void JournyMainFrame::create_menu() {
     edit_menu->AppendSeparator();
     edit_menu->Append(wxID_DELETE, _T("Delete"));
 
-    frame_menubar->Append(file_menu, wxT("File"));
-    frame_menubar->Append(edit_menu, wxT("Edit"));
+    auto* help_menu = new wxMenu();
+    help_menu->Append(wxID_ABOUT, _T("About"));
+
+    frame_menubar->Append(file_menu, wxT("&File"));
+    frame_menubar->Append(edit_menu, wxT("&Edit"));
+    frame_menubar->Append(help_menu, wxT("&Help"));
     SetMenuBar(frame_menubar);
 
     Bind(wxEVT_MENU, &JournyMainFrame::OnNewEntry, this, wxID_NEW);
     Bind(wxEVT_MENU, &JournyMainFrame::OnDeleteEntry, this, wxID_DELETE);
+    Bind(wxEVT_MENU, &JournyMainFrame::OnDisplayVersion, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &JournyMainFrame::OnEnterSplitEditMode, this, splitEditModeId);
     Bind(wxEVT_MENU, &JournyMainFrame::OnEnterReadingMode, this, readingModeId);
 }
@@ -264,7 +270,7 @@ void JournyMainFrame::OnNewEntry(wxCommandEvent &event)
     msg.Show();
 }
 
-void JournyMainFrame::OnDeleteEntry(wxCommandEvent &event) {
+void JournyMainFrame::OnDeleteEntry(wxCommandEvent& event) {
     if(not journal_entry_list)
     {
         return;
@@ -292,4 +298,10 @@ void JournyMainFrame::OnDeleteEntry(wxCommandEvent &event) {
         wxNotificationMessage msg(messageTitle, message);
         msg.Show();
     }
+}
+
+void JournyMainFrame::OnDisplayVersion(wxCommandEvent& event)
+{
+    wxMessageDialog dialog(this, wxString("Journy version: ") + JOURNY_VERSION , "About", wxOK);
+    dialog.ShowModal();
 }

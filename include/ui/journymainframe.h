@@ -63,5 +63,7 @@ private:
 
     void OnNewEntry(wxCommandEvent& event);
     void OnDeleteEntry(wxCommandEvent& event);
+
+    void OnDisplayVersion(wxCommandEvent& event);
 };
 

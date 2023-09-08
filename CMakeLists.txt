@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
 
+set(PROJECT_VERSION_FILE ${CMAKE_SOURCE_DIR}/include/version.h)
 
-project(journy2 LANGUAGES CXX)
+project(journy2 LANGUAGES CXX VERSION 0.1.0)
+file(WRITE ${PROJECT_VERSION_FILE} "#pragma once\n#ifndef JOURNY_VERSION\n#define JOURNY_VERSION \"${CMAKE_PROJECT_VERSION}\"\n#endif")
 
 set(CMAKE_CXX_STANDARD 20 FORCE)
 
@@ -21,6 +23,7 @@ add_executable(journy2
 
     source/config_strings.cpp include/config_strings.h
 
+    ${PROJECT_VERSION_FILE}
     include/ui/icons.h
     ${MAYBE_WIN_MANIFEST}
 )
