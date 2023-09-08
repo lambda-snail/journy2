@@ -62,5 +62,6 @@ private:
     void SetWebViewContent(wxString const& markdown);
 
     void OnNewEntry(wxCommandEvent& event);
+    void OnDeleteEntry(wxCommandEvent& event);
 };
 

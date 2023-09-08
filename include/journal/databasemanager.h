@@ -15,7 +15,7 @@ namespace todo {
 
         bool AddNewJournalEntry(JournalEntry& entry) const;
         void UpdateJournalEntryContent(JournalEntry const& entry) const;
-//        bool DeleteJournalEntry(JournalEntry const& entry) const;
+        bool DeleteJournalEntry(JournalEntry const& entry) const;
 //
 //        void GetAllJournalEntries();
 
@@ -31,6 +31,7 @@ namespace todo {
         sqlite3_stmt* p_CreateJournalEntiresQuery;
         sqlite3_stmt* p_GetEntriesBetweenDatesQuery;
         sqlite3_stmt* p_UpdateEntryContentQuery;
+        sqlite3_stmt* p_DeleteEntry;
 
         void InitQueries();
         void ClearQueries();

@@ -149,22 +149,22 @@ void todo::DatabaseManager::UpdateJournalEntryContent(JournalEntry const& entry)
     sqlite3_reset( sql );
 }
 
-//bool todo::DatabaseManager::DeleteJournalEntry(JournalEntry const& entry) const
-//{
-//    QSqlQuery query;
-//    query.prepare("delete from journalentries where id = (:id)");
-//    query.bindValue(":id", entry.getId());
-//
-//    if(query.exec())
-//    {
-//        qDebug() << "Deleted journalentry with id" << entry.getId();
-//        return true;
-//    }
-//
-//    qDebug() << "Unable to delete journal entry: " << query.lastError();
-//    return false;
-//}
-//
+bool todo::DatabaseManager::DeleteJournalEntry(JournalEntry const& entry) const
+{
+    auto* sql = p_DeleteEntry;
+    sqlite3_bind_int(sql, 1, static_cast<int>(entry.getId()));
+
+    int status = sqlite3_step( sql );
+    if(status != SQLITE_DONE)
+    {
+        wxLogError(sqlite3_errmsg(p_Db));
+        return false;
+    }
+
+    sqlite3_clear_bindings( sql );
+    sqlite3_reset( sql );
+    return true;
+}
 
 void todo::DatabaseManager::InitQueries() {
     sqlite3_prepare_v2(
@@ -190,10 +190,19 @@ void todo::DatabaseManager::InitQueries() {
             &p_UpdateEntryContentQuery,
             nullptr
     );
+
+    sqlite3_prepare_v2(
+            p_Db,
+            "delete from journalentries where id = (:id)",
+            -1,
+            &p_DeleteEntry,
+            nullptr
+    );
 }
 
 void todo::DatabaseManager::ClearQueries() {
     sqlite3_finalize(p_CreateJournalEntiresQuery);
     sqlite3_finalize(p_GetEntriesBetweenDatesQuery);
     sqlite3_finalize(p_UpdateEntryContentQuery);
+    sqlite3_finalize(p_DeleteEntry);
 }

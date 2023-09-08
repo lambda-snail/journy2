@@ -41,6 +41,7 @@ void JournyMainFrame::SetUpUi() {
     Bind(wxEVT_BUTTON, &JournyMainFrame::OnNewEntry, this, wxID_NEW);
 
     auto* delete_entry_button = new wxButton(this, wxID_DELETE, "Delete");
+    Bind(wxEVT_BUTTON, &JournyMainFrame::OnDeleteEntry, this, wxID_DELETE);
 
     calendar_toolbar_sizer->Add(create_entry_button);
     calendar_toolbar_sizer->Add(delete_entry_button);
@@ -259,4 +260,20 @@ void JournyMainFrame::OnNewEntry(wxCommandEvent &event)
     wxNotificationMessage msg("Entry Created","Journal entry has been created!");
     msg.Show();
     //wxMessageBox("Journal entry has been created!", "Entry Created", wxOK);
+}
+
+void JournyMainFrame::OnDeleteEntry(wxCommandEvent &event) {
+    if(not journal_entry_list)
+    {
+        return;
+    }
+
+    long selected = journal_entry_list->GetFocusedItem();
+    if(selected >= 0) {
+        auto* entry = reinterpret_cast<todo::JournalEntry*>(journal_entry_list->GetItemData(selected));
+        if(p_Db->DeleteJournalEntry(*entry))
+        {
+            journal_entry_list->DeleteItem(selected);
+        }
+    }
 }
