@@ -1,6 +1,7 @@
 cmake-build-debug/
 cmake-build-release/
 .idea/
+include/version.h
 
 CMakeLists.txt.user
 CMakeCache.txt
