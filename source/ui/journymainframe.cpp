@@ -207,12 +207,15 @@ void JournyMainFrame::create_menu() {
     auto* edit_menu = new wxMenu();
     edit_menu->Append(readingModeId, _T("Reading Mode"));
     edit_menu->Append(splitEditModeId, _T("Edit Mode"));
+    edit_menu->AppendSeparator();
+    edit_menu->Append(wxID_DELETE, _T("Delete"));
 
     frame_menubar->Append(file_menu, wxT("File"));
     frame_menubar->Append(edit_menu, wxT("Edit"));
     SetMenuBar(frame_menubar);
 
     Bind(wxEVT_MENU, &JournyMainFrame::OnNewEntry, this, wxID_NEW);
+    Bind(wxEVT_MENU, &JournyMainFrame::OnDeleteEntry, this, wxID_DELETE);
     Bind(wxEVT_MENU, &JournyMainFrame::OnEnterSplitEditMode, this, splitEditModeId);
     Bind(wxEVT_MENU, &JournyMainFrame::OnEnterReadingMode, this, readingModeId);
 }
