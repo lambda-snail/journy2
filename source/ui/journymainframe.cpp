@@ -198,7 +198,6 @@ void JournyMainFrame::create_menu() {
     frame_menubar = new wxMenuBar();
 
     auto* file_menu = new wxMenu();
-    file_menu->Append(wxID_NEW, _T("New Entry"));
     file_menu->Append(wxID_SAVE, _T("Save"));
     file_menu->AppendSeparator();
     file_menu->Append(wxID_EXIT, _T("&Quit"));
@@ -206,16 +205,17 @@ void JournyMainFrame::create_menu() {
     auto const readingModeId = wxWindow::NewControlId();
     auto const splitEditModeId = wxWindow::NewControlId();
     auto* edit_menu = new wxMenu();
+    edit_menu->Append(wxID_NEW, _T("New"));
+    edit_menu->Append(wxID_DELETE, _T("Delete"));
+    edit_menu->AppendSeparator();
     edit_menu->Append(readingModeId, _T("Reading Mode"));
     edit_menu->Append(splitEditModeId, _T("Edit Mode"));
-    edit_menu->AppendSeparator();
-    edit_menu->Append(wxID_DELETE, _T("Delete"));
 
     auto* help_menu = new wxMenu();
     help_menu->Append(wxID_ABOUT, _T("About"));
 
     frame_menubar->Append(file_menu, wxT("&File"));
-    frame_menubar->Append(edit_menu, wxT("&Edit"));
+    frame_menubar->Append(edit_menu, wxT("&Journal"));
     frame_menubar->Append(help_menu, wxT("&Help"));
     SetMenuBar(frame_menubar);
 
