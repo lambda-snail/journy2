@@ -34,6 +34,17 @@ void JournyMainFrame::SetUpUi() {
     left_menu_sizer->Add(journal_entry_list, 1, wxEXPAND, 0);
     InitListData();
 
+    // Calendar toolbar
+    auto* calendar_toolbar_sizer = new wxBoxSizer(wxHORIZONTAL);
+
+    auto create_entry_id = wxWindow::NewControlId();
+    auto* create_entry_button = new wxButton(this, wxID_NEW, "New");
+    Bind(wxEVT_BUTTON, &JournyMainFrame::OnNewEntry, this, wxID_NEW);
+
+    calendar_toolbar_sizer->Add(create_entry_button);
+    left_menu_sizer->Add(calendar_toolbar_sizer);
+
+    // Calendar
     calendar_ctrl = create_calendar();
     left_menu_sizer->Add(calendar_ctrl, 0, 0, 0);
 
