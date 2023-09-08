@@ -259,7 +259,6 @@ void JournyMainFrame::OnNewEntry(wxCommandEvent &event)
 
     wxNotificationMessage msg("Entry Created","Journal entry has been created!");
     msg.Show();
-    //wxMessageBox("Journal entry has been created!", "Entry Created", wxOK);
 }
 
 void JournyMainFrame::OnDeleteEntry(wxCommandEvent &event) {
@@ -268,12 +267,26 @@ void JournyMainFrame::OnDeleteEntry(wxCommandEvent &event) {
         return;
     }
 
+    wxString messageTitle;
+    wxString message;
+
     long selected = journal_entry_list->GetFocusedItem();
     if(selected >= 0) {
         auto* entry = reinterpret_cast<todo::JournalEntry*>(journal_entry_list->GetItemData(selected));
         if(p_Db->DeleteJournalEntry(*entry))
         {
             journal_entry_list->DeleteItem(selected);
+
+            messageTitle = "Entry Created";
+            message = "Journal entry has been created!";
         }
+        else
+        {
+            messageTitle = "An error occured";
+            message = "Unable to delete entry";
+        }
+
+        wxNotificationMessage msg(messageTitle, message);
+        msg.Show();
     }
 }
