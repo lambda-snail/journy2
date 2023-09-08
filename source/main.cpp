@@ -1,6 +1,7 @@
 #include <wx/wx.h>
 #include <wx/config.h>
 #include <wx/stdpaths.h>
+#include <wx/filename.h>
 
 #include <memory>
 #include "ui/journymainframe.h"
