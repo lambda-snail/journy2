@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
 
 project(journy2 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 20 FORCE)
 
 include(CMakeDependencies.txt)
 find_package(unofficial-sqlite3 REQUIRED)
