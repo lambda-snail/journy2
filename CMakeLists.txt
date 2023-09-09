@@ -5,7 +5,7 @@ set(PROJECT_VERSION_FILE ${CMAKE_SOURCE_DIR}/include/version.h)
 project(journy2 LANGUAGES CXX VERSION 0.1.0)
 file(WRITE ${PROJECT_VERSION_FILE} "#pragma once\n#ifndef JOURNY_VERSION\n#define JOURNY_VERSION \"${CMAKE_PROJECT_VERSION}\"\n#endif")
 
-set(CMAKE_CXX_STANDARD 20 FORCE)
+set(CMAKE_CXX_STANDARD 20)
 
 include(CMakeDependencies.txt)
 find_package(unofficial-sqlite3 REQUIRED)
