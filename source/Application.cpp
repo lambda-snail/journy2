@@ -8,14 +8,11 @@ void Application::Startup()
 {
     p_Db = std::make_unique<todo::DatabaseManager>(R"(C:\Projects\cpp\journy2\resources\todo.db)", false);
 
-    std::chrono::year_month_day min;// { std::chrono::January / 1 / 2023 };
-    std::chrono::year_month_day max;// { std::chrono::December / 31 / 2023 };
+    std::chrono::year_month_day min{};// { std::chrono::January / 1 / 2023 };
+    std::chrono::year_month_day max{};// { std::chrono::December / 31 / 2023 };
 
     std::stringstream minstream("2023-01-01");
     std::stringstream maxstream("2023-12-31");
-
-    std::chrono::from_stream(minstream, "%F", min);
-    std::chrono::from_stream(maxstream, "%F", max);
 
     auto entries = p_Db->GetAllJournalEntriesBetween(min, max);
     for(auto const& entry : entries)
