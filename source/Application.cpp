@@ -45,26 +45,47 @@ void Application::BuildUi() {
 
     ImGui::Begin("Main Window", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoResize  );
 
-        ImGui::BeginChild("Entry List", {256.f, 0.f}, true, ImGuiWindowFlags_None);
-
-        ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, {16.f, 4.f});
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {16.f, 4.f});
-
-        if(ImGui::BeginTable("Entries", 1, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings))
+        if(bShouldInitDockEntryList)
         {
-            for (auto const& entry : journalEntries)
-            {
-                ImGui::TableNextColumn();
-                ImGui::Button(entry.toString().c_str(), ImVec2(-FLT_MIN, 0.0f));
-            }
-
-            ImGui::EndTable();
+            auto const mainWindowId = ImGui::GetWindowDockID();//ImGui::GetItemID();
+            ImGui::SetNextWindowDockID(mainWindowId);
+            bShouldInitDockEntryList = false;
         }
 
+        //ImGui::BeginChild("Entry List", {256.f, 0.f}, true, ImGuiWindowFlags_None);
+        ImGui::Begin("Entry List", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar );
 
+            ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, {16.f, 4.f});
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {16.f, 4.f});
 
-        ImGui::PopStyleVar(2);
-        ImGui::EndChild();
+            if(ImGui::BeginTable("Entries", 1, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings))
+            {
+                for (auto& entry : journalEntries)
+                {
+                    ImGui::TableNextColumn();
+                    if(ImGui::Button(entry.toString().c_str(), ImVec2(-FLT_MIN, 0.0f)))
+                    {
+                        if(openEntries.contains(entry.getDate()))
+                        {
+                            // Fetch and focus
+                        }
+                        else
+                        {
+                            openEntries[entry.getDate()] = std::make_unique<journy::ui::MarkdownEditor>(&entry);
+                        }
+                    }
+                }
+
+                ImGui::EndTable();
+            }
+
+            ImGui::PopStyleVar(2);
+        ImGui::End(); // Entry list
+
+        for(auto const& [date, editor] : openEntries)
+        {
+            editor->BuildUi();
+        }
 
     ImGui::End();
 

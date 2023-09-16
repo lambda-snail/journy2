@@ -43,6 +43,8 @@ add_executable(journy2
     include/journal/databasemanager.h source/journal/databasemanager.cpp
 
     source/Application.cpp include/Application.h
+        include/ui/markdowneditor.h
+        source/ui/markdowneditor.cpp
 )
 
 target_include_directories(journy2

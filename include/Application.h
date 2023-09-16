@@ -1,6 +1,8 @@
 #pragma once
 
+#include <map>
 #include <imgui.h>
+#include "ui/markdowneditor.h"
 #include "journal/databasemanager.h"
 
 class Application {
@@ -21,4 +23,8 @@ private:
 
     std::vector<todo::JournalEntry> journalEntries;
     std::unique_ptr<todo::DatabaseManager> p_Db;
+
+    std::map<std::chrono::year_month_day, std::unique_ptr<journy::ui::MarkdownEditor>> openEntries;
+
+    bool bShouldInitDockEntryList { true };
 };
