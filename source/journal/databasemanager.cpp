@@ -1,4 +1,5 @@
 #include <iostream>
+#include <assert.h>
 
 #include "journal/databasemanager.h"
 #include "journal/entry.h"
@@ -86,13 +87,14 @@ std::vector<int> todo::DatabaseManager::GetListOfJournalYears() const
 std::vector<todo::JournalEntry>
 todo::DatabaseManager::GetAllJournalEntriesBetween(std::chrono::year_month_day min, std::chrono::year_month_day max)
 {
+    assert(min < max);
+
     auto* sql = p_GetEntriesBetweenDatesQuery;
     sqlite3_bind_text(sql, 1, std::format("{:%F}", min).c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(sql, 2, std::format("{:%F}", max).c_str(), -1, SQLITE_TRANSIENT);
 
     std::vector<JournalEntry> entries;
     int status = sqlite3_step( sql );
-    std::cout << (status == SQLITE_ROW) << std::endl;
     while(status == SQLITE_ROW)
     {
         long long id = sqlite3_column_int64(sql, 0);
@@ -100,7 +102,7 @@ todo::DatabaseManager::GetAllJournalEntriesBetween(std::chrono::year_month_day m
         unsigned char const* content_str = sqlite3_column_text(sql, 2);
 
         std::stringstream s(reinterpret_cast<char const*>(date_str));
-        std::chrono::year_month_day ymd;
+        std::chrono::year_month_day ymd{};
         std::chrono::from_stream(s , "%F", ymd);
 
         entries.emplace_back(id, ymd, reinterpret_cast<char const*>(content_str));

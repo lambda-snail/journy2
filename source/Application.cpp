@@ -14,10 +14,13 @@ void Application::Startup()
     std::stringstream minstream("2023-01-01");
     std::stringstream maxstream("2023-12-31");
 
-    auto entries = p_Db->GetAllJournalEntriesBetween(min, max);
-    for(auto const& entry : entries)
+    std::chrono::from_stream(minstream, "%F", min);
+    std::chrono::from_stream(maxstream, "%F", max);
+
+    journalEntries = p_Db->GetAllJournalEntriesBetween(min, max);
+    for(auto const& e : journalEntries)
     {
-        std::cout << entry.getDate() << std::endl;
+        std::cout << e.toString() << std::endl;
     }
 }
 
@@ -32,12 +35,29 @@ void Application::BuildUi() {
 
 #ifdef IMGUI_HAS_VIEWPORT
     auto const* vp = ImGui::GetMainViewport();
-    ImGui::SetNextWindowPos(vp->WorkPos);
-    ImGui::SetNextWindowSize(vp->WorkSize);
-    ImGui::SetNextWindowViewport(vp->ID);
+#else
+    ImGui::SetNextWindowPos({0.f, 0.f});
+    ImGui::SetNextWindowSize(io.DisplaySize);
 #endif
 
+    auto vp_dockId = ImGui::DockSpaceOverViewport(vp, ImGuiDockNodeFlags_None);
+    ImGui::SetNextWindowDockID(vp_dockId);
+
     ImGui::Begin("Main Window", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoResize  );
+
+        ImGui::BeginChild("Entry List", {256.f, 0.f}, true, ImGuiWindowFlags_None);
+        if(ImGui::BeginTable("Entries", 1, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings))
+        {
+            for (auto const& entry : journalEntries)
+            {
+                ImGui::TableNextColumn();
+                ImGui::Button(entry.toString().c_str(), ImVec2(-FLT_MIN, 0.0f));
+            }
+
+            ImGui::EndTable();
+        }
+
+        ImGui::EndChild();
 
     ImGui::End();
 
