@@ -31,25 +31,22 @@ void journy::ui::MarkdownEditor::BuildUi() {
             if(ImGui::Button("Read"))  bEditMode = false;
         ImGui::EndChild();
 
-        ImGui::BeginChild("Markdown", {}, true);
+        if(bEditMode)
+        {
 
-            ImGui::BeginChild("Reader");
-
-                ImGui::TextUnformatted(entry->getContent().c_str());
-
+            ImGui::BeginChild("Writer", { ImGui::GetWindowWidth() * .5f, 0.f }, true);
+            ImGui::TextUnformatted("Writing some stuff!");
             ImGui::EndChild();
 
-            if(bEditMode)
-            {
-                ImGui::SameLine();
-                ImGui::BeginChild("Writer");
+            ImGui::SameLine();
+        }
 
-                ImGui::TextUnformatted("Writing some stuff!");
+        ImGui::BeginChild("Reader", {}, true);
 
-                ImGui::EndChild();
-            }
+            ImGui::TextUnformatted(entry->getContent().c_str());
 
-    ImGui::EndChild(); // Markdown
+        ImGui::EndChild();
+
 
     ImGui::End();
 }
