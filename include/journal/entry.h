@@ -1,7 +1,7 @@
 #pragma once
 
-#include "wx/string.h"
-#include "wx/datetime.h"
+#include <string>
+#include <chrono>
 
 namespace todo {
     class JournalEntry
@@ -11,25 +11,25 @@ namespace todo {
         JournalEntry() = default;
         JournalEntry(JournalEntry const& rhs);
         JournalEntry(JournalEntry&& rhs) noexcept;
-        JournalEntry(wxDateTime date, wxString const& content);
-        JournalEntry(int id, wxDateTime date, wxString const& content);
+        JournalEntry(std::chrono::year_month_day date, std::string const& content);
+        JournalEntry(long long id, std::chrono::year_month_day date, std::string const& content);
 
         JournalEntry& operator=(todo::JournalEntry const& other) = default;
 
         [[nodiscard]] long long getId() const;
         void setId(long long newId);
 
-        [[nodiscard]] wxDateTime getDate() const;
-        void setDate(wxDateTime const& newDate);
+        [[nodiscard]] std::chrono::year_month_day getDate() const;
+        void setDate(std::chrono::year_month_day const& newDate);
 
-        [[nodiscard]] wxString getContent() const;
-        void setContent(wxString const& newContent);
+        [[nodiscard]] std::string getContent() const;
+        void setContent(std::string const& newContent);
 
-        [[nodiscard]] wxString toString() const;
+        [[nodiscard]] std::string toString() const;
     private:
 
         long long Id { };
-        wxDateTime Date { };
-        wxString Content { };
+        std::chrono::year_month_day Date { };
+        std::string Content { };
     };
 }

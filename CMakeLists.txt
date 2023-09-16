@@ -38,6 +38,9 @@ find_package(unofficial-sqlite3 REQUIRED)
 add_executable(journy2
     source/main.cpp
     include/ui/themes.h
+
+    include/journal/entry.h source/journal/entry.cpp
+    include/journal/databasemanager.h source/journal/databasemanager.cpp
 )
 
 target_include_directories(journy2
