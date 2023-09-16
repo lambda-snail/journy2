@@ -4,7 +4,24 @@
 
 void journy::ui::MarkdownEditor::BuildUi() {
 
-    ImGui::Begin(entry->toString().c_str());
+    if(not bIsOpen)
+    {
+        return;
+    }
+
+    int flags = ImGuiWindowFlags_None;
+    if(bIsDirty)
+    {
+        flags = flags | ImGuiWindowFlags_UnsavedDocument;
+    }
+
+    if(bShouldFocusNextPass)
+    {
+        ImGui::SetNextWindowFocus();
+        bShouldFocusNextPass = false;
+    }
+
+    ImGui::Begin(entry->toString().c_str(), &bIsOpen, flags);
 
         ImGui::BeginChild("Reader");
 
@@ -21,4 +38,16 @@ void journy::ui::MarkdownEditor::BuildUi() {
 }
 
 journy::ui::MarkdownEditor::MarkdownEditor(todo::JournalEntry *e) : entry { e } {}
+
+bool journy::ui::MarkdownEditor::IsOpen() const {
+    return bIsOpen;
+}
+
+void journy::ui::MarkdownEditor::SetOpen(bool isOpen) {
+    bIsOpen = isOpen;
+}
+
+void journy::ui::MarkdownEditor::SetFocusNextPass() {
+    bShouldFocusNextPass = true;
+}
 

@@ -67,7 +67,16 @@ void Application::BuildUi() {
                     {
                         if(openEntries.contains(entry.getDate()))
                         {
-                            // Fetch and focus
+                            std::unique_ptr<journy::ui::MarkdownEditor> const& editor = openEntries.at(entry.getDate());
+                            if(not editor->IsOpen())
+                            {
+                                editor->SetOpen(true);
+                            }
+                            else
+                            {
+                                // Focus or bring to foreground
+
+                            }
                         }
                         else
                         {
