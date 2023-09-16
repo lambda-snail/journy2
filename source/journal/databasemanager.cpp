@@ -103,8 +103,6 @@ todo::DatabaseManager::GetAllJournalEntriesBetween(std::chrono::year_month_day m
         std::chrono::year_month_day ymd;
         std::chrono::from_stream(s , "%F", ymd);
 
-        std::cout << std::format("{:%F}", ymd) << std::endl;
-
         entries.emplace_back(id, ymd, reinterpret_cast<char const*>(content_str));
 
         status = sqlite3_step( sql );
