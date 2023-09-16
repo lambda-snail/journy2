@@ -23,18 +23,35 @@ void journy::ui::MarkdownEditor::BuildUi() {
 
     ImGui::Begin(entry->toString().c_str(), &bIsOpen, flags);
 
-        ImGui::BeginChild("Reader");
+        ImGui::BeginChild("Command", { 0.f, 32.f }, false);
+            if(ImGui::Button("Edit")) bEditMode = true;
 
-            ImGui::TextUnformatted(entry->getContent().c_str());
+            ImGui::SameLine();
 
+            if(ImGui::Button("Read"))  bEditMode = false;
         ImGui::EndChild();
 
-    ImGui::End();
+        ImGui::BeginChild("Markdown", {}, true);
 
-    if(bEditMode)
-    {
-        ImGui::SameLine();
-    }
+            ImGui::BeginChild("Reader");
+
+                ImGui::TextUnformatted(entry->getContent().c_str());
+
+            ImGui::EndChild();
+
+            if(bEditMode)
+            {
+                ImGui::SameLine();
+                ImGui::BeginChild("Writer");
+
+                ImGui::TextUnformatted("Writing some stuff!");
+
+                ImGui::EndChild();
+            }
+
+    ImGui::EndChild(); // Markdown
+
+    ImGui::End();
 }
 
 journy::ui::MarkdownEditor::MarkdownEditor(todo::JournalEntry *e) : entry { e } {}
