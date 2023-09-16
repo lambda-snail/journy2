@@ -1,10 +1,11 @@
 #pragma once
 
 #include <imgui.h>
+#include "journal/databasemanager.h"
 
 class Application {
 public:
-    explicit Application(ImGuiIO& imguiio) : io(imguiio) {};
+    explicit Application(ImGuiIO& imguiio) : io(imguiio), p_Db{nullptr} {};
 
     void Startup();
     void BuildUi();
@@ -17,4 +18,6 @@ private:
 
     bool show_demo_window = true;
     bool show_another_window = false;
+
+    std::unique_ptr<todo::DatabaseManager> p_Db;
 };
