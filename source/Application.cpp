@@ -46,6 +46,10 @@ void Application::BuildUi() {
     ImGui::Begin("Main Window", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoResize  );
 
         ImGui::BeginChild("Entry List", {256.f, 0.f}, true, ImGuiWindowFlags_None);
+
+        ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, {16.f, 4.f});
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {16.f, 4.f});
+
         if(ImGui::BeginTable("Entries", 1, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings))
         {
             for (auto const& entry : journalEntries)
@@ -57,6 +61,9 @@ void Application::BuildUi() {
             ImGui::EndTable();
         }
 
+
+
+        ImGui::PopStyleVar(2);
         ImGui::EndChild();
 
     ImGui::End();
