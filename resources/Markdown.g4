@@ -11,7 +11,7 @@ code_stream_inl : CODE_ENVELOPE w_stream CODE_ENVELOPE ;
 
 code_stream_blk : CODE_ENVELOPE w_stream CODE_ENVELOPE ; // Re-label
 
-w_stream        : (italics_stream | bold_stream | code_stream_inl | WORD BLANK*)+ | WORD;
+w_stream        : (italics_stream | bold_stream | code_stream_inl | WORD BLANK*)+? | WORD;
 
 header          : HEADER_START+ BLANK* raw_stream;
 paragraph       : w_stream ;
