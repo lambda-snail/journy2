@@ -19,6 +19,12 @@ namespace journy::markdown
         void enterBlock(marky::MarkdownParser::BlockContext* ctx) override;
         void exitBlock(marky::MarkdownParser::BlockContext* ctx) override;
 
+        void enterItalics_stream(marky::MarkdownParser::Italics_streamContext* ctx) override;
+        void exitItalics_stream(marky::MarkdownParser::Italics_streamContext* ctx) override;
+
+        //void enterBold_stream(marky::MarkdownParser::Bold_streamContext* ctx) override;
+        //void exitBold_stream(marky::MarkdownParser::Bold_streamContext* ctx) override;
+
     private:
         ImDrawList* draw;
 

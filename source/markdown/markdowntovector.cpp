@@ -61,6 +61,14 @@ void journy::markdown::MarkdownToVector::enterHeader(marky::MarkdownParser::Head
     }
 }
 
-void journy::markdown::MarkdownToVector::exitHeader(marky::MarkdownParser::HeaderContext *ctx) {
+void journy::markdown::MarkdownToVector::exitHeader(marky::MarkdownParser::HeaderContext* ctx) {
+    ImGui::PopFont();
+}
+
+void journy::markdown::MarkdownToVector::enterItalics_stream(marky::MarkdownParser::Italics_streamContext* ctx) {
+    ImGui::PushFont(journy::ui::fonts::FontPool::Roboto_Italic);
+}
+
+void journy::markdown::MarkdownToVector::exitItalics_stream(marky::MarkdownParser::Italics_streamContext* ctx) {
     ImGui::PopFont();
 }
