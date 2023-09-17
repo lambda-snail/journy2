@@ -23,6 +23,8 @@ void Application::Startup()
     {
         std::cout << e.toString() << std::endl;
     }
+
+    //ImGui::PushFont(journy::ui::fonts::FontPool::Roboto_Regular);
 }
 
 void Application::Teardown() {

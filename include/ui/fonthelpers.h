@@ -10,11 +10,11 @@ namespace journy::ui::fonts {
     public:
         static void InitFonts();
 
-        static ImFont* Normal;
-        static ImFont* Bold;
-        static ImFont* Normal_200;
-        static ImFont* Normal_300;
-        static ImFont* Normal_400;
+        static ImFont* Roboto_Regular;
+        static ImFont* Roboto_Bold;
+        static ImFont* Roboto_Italic;
+        static ImFont* Roboto_Header1;
+        static ImFont* Roboto_Header2;
 
         static ImFont* AddFont(char const* file, float pixel_size);
     };

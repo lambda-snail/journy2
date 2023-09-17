@@ -2,8 +2,6 @@
 #include "markdown/parser/MarkdownLexer.h"
 #include "ui/fonthelpers.h"
 
-#include <iostream>
-
 void journy::markdown::MarkdownToVector::exitBlock(marky::MarkdownParser::BlockContext *ctx) {
     MarkdownBaseListener::exitBlock(ctx);
 }
@@ -45,7 +43,21 @@ void journy::markdown::MarkdownToVector::enterHeader(marky::MarkdownParser::Head
     int lvl = static_cast<int>(ctx->HEADER_START().size());
     if(lvl <= HTML_MaxHeaderLevel)
     {
-        ImGui::PushFont(journy::ui::fonts::FontPool::Bold);
+        ImFont const* font = nullptr;
+        switch(lvl)
+        {
+            case 1:
+                font = journy::ui::fonts::FontPool::Roboto_Header1;
+                break;
+            case 2:
+                font = journy::ui::fonts::FontPool::Roboto_Header2;
+                break;
+            default:
+                font = journy::ui::fonts::FontPool::Roboto_Bold;
+                break;
+        }
+
+        ImGui::PushFont(journy::ui::fonts::FontPool::Roboto_Header1);
     }
 }
 
