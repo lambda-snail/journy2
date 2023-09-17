@@ -22,6 +22,9 @@ namespace journy::markdown
     private:
         ImDrawList* draw;
 
+        ImFont* active_font { nullptr };
+        int active_font_size { 12 };
+
         ImVec2 blank_size { ImGui::CalcTextSize(" ") };
         ImVec2 cursor { ImGui::GetCursorScreenPos() };
         ImVec2 offset { 0,0 };

@@ -42,6 +42,8 @@ add_executable(journy2
     source/markdown/generated/MarkdownVisitor.cpp
     include/markdown/backend/html_backend.h source/markdown/backend/html_backend.cpp
     include/markdown/Marky.h source/markdown/Marky.cpp
+    include/ui/fonthelpers.h
+    source/ui/fonthelpers.cpp
 )
 
 target_include_directories(journy2
@@ -62,6 +64,9 @@ target_link_libraries(journy2
         unofficial::sqlite3::sqlite3
         antlr4_shared
 )
+
+FILE(COPY resources DESTINATION "${CMAKE_BINARY_DIR}/")
+
 
 # Useful for debugging
 #get_cmake_property(_variableNames VARIABLES)

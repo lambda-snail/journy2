@@ -1,5 +1,6 @@
 #include "markdown/markdowntovector.h"
 #include "markdown/parser/MarkdownLexer.h"
+#include "ui/fonthelpers.h"
 
 #include <iostream>
 
@@ -44,10 +45,10 @@ void journy::markdown::MarkdownToVector::enterHeader(marky::MarkdownParser::Head
     int lvl = static_cast<int>(ctx->HEADER_START().size());
     if(lvl <= HTML_MaxHeaderLevel)
     {
-        //ImGui::Text
+        ImGui::PushFont(journy::ui::fonts::FontPool::Bold);
     }
 }
 
 void journy::markdown::MarkdownToVector::exitHeader(marky::MarkdownParser::HeaderContext *ctx) {
-
+    ImGui::PopFont();
 }

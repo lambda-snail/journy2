@@ -3,6 +3,7 @@
 #include "Application.h"
 
 #include "imgui.h"
+#include "ui/fonthelpers.h"
 
 void Application::Startup()
 {
