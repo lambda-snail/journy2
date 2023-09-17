@@ -1,12 +1,15 @@
 #include "markdown/markdowntovector.h"
 #include "markdown/parser/MarkdownLexer.h"
 
+#include <iostream>
+
 void journy::markdown::MarkdownToVector::exitBlock(marky::MarkdownParser::BlockContext *ctx) {
     MarkdownBaseListener::exitBlock(ctx);
 }
 
 void journy::markdown::MarkdownToVector::enterBlock(marky::MarkdownParser::BlockContext *ctx) {
-    MarkdownBaseListener::enterBlock(ctx);
+    offset.x = 0;
+    offset.y += row_distance_between_paragraphs + blank_size.y;
 }
 
 void journy::markdown::MarkdownToVector::visitTerminal(antlr4::tree::TerminalNode *node)
@@ -25,14 +28,26 @@ void journy::markdown::MarkdownToVector::visitTerminal(antlr4::tree::TerminalNod
     if (offset.x + length > window_width)
     {
         offset.x = 0;
-        offset.y += row_distance_in_paragraph + blank_size.y;
+        offset.y += row_distance_within_paragraph + blank_size.y;
     }
 
     ImVec2 draw_pos { cursor.x + offset.x, cursor.y + offset.y };
 
-    draw->AddText(draw_pos, color, str.c_str());
+    draw->AddText(draw_pos, text_color, str.c_str());
     offset.x += length;
 
-    draw->AddText(draw_pos, color, " ");
+    draw->AddText(draw_pos, text_color, " ");
     offset.x += blank_size.x;
+}
+
+void journy::markdown::MarkdownToVector::enterHeader(marky::MarkdownParser::HeaderContext* ctx) {
+    int lvl = static_cast<int>(ctx->HEADER_START().size());
+    if(lvl <= HTML_MaxHeaderLevel)
+    {
+        //ImGui::Text
+    }
+}
+
+void journy::markdown::MarkdownToVector::exitHeader(marky::MarkdownParser::HeaderContext *ctx) {
+
 }
