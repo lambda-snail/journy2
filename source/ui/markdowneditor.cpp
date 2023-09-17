@@ -1,7 +1,7 @@
 #include "imgui.h"
 
 #include "ui/markdowneditor.h"
-#include "marky/Marky.h"
+#include "markdown/Marky.h"
 #include "markdown/markdowntovector.h"
 
 void journy::ui::MarkdownEditor::BuildUi() {

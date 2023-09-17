@@ -1,5 +1,5 @@
 #include "markdown/markdowntovector.h"
-#include "marky/parser/MarkdownLexer.h"
+#include "markdown/parser/MarkdownLexer.h"
 
 void journy::markdown::MarkdownToVector::exitBlock(marky::MarkdownParser::BlockContext *ctx) {
     MarkdownBaseListener::exitBlock(ctx);

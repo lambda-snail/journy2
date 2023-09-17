@@ -1,25 +1,6 @@
-#cmake_minimum_required(VERSION 3.26)
-#project(imgui_test)
-#
-#set(CMAKE_CXX_STANDARD 20)
-#
-#find_package(Vulkan REQUIRED)
-#find_package(glfw3 CONFIG REQUIRED)
-#find_package(imgui CONFIG REQUIRED)
-#
-#add_executable(imgui_test
-#        source/main.cpp
-#        include/ui/themes.h
-#        include/config.h)
-#
-#target_include_directories(imgui_test
-#        PRIVATE
-#        ${CMAKE_SOURCE_DIR}/include
-#)
-#
-#target_link_libraries(imgui_test PRIVATE imgui::imgui glfw Vulkan::Vulkan)
-
 cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
+
+include(FetchContent)
 
 set(PROJECT_VERSION_FILE ${CMAKE_SOURCE_DIR}/include/version.h)
 
@@ -32,8 +13,7 @@ find_package(Vulkan REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(unofficial-sqlite3 REQUIRED)
-
-#include(CMakeDependencies.txt)
+find_package(antlr4-runtime CONFIG REQUIRED)
 
 add_executable(journy2
     source/main.cpp
@@ -43,16 +23,34 @@ add_executable(journy2
     include/journal/databasemanager.h source/journal/databasemanager.cpp
 
     source/Application.cpp include/Application.h
-        include/ui/markdowneditor.h
-        source/ui/markdowneditor.cpp
+    include/ui/markdowneditor.h source/ui/markdowneditor.cpp
+    include/markdown/markdowntovector.h source/markdown/markdowntovector.cpp
+
+    # Markdown parser
+    include/markdown/parser/MarkdownBaseListener.h
+    include/markdown/parser/MarkdownBaseVisitor.h
+    include/markdown/parser/MarkdownLexer.h
+    include/markdown/parser/MarkdownListener.h
+    include/markdown/parser/MarkdownParser.h
+    include/markdown/parser/MarkdownVisitor.h
+
+    source/markdown/generated/MarkdownBaseListener.cpp
+    source/markdown/generated/MarkdownBaseVisitor.cpp
+    source/markdown/generated/MarkdownLexer.cpp
+    source/markdown/generated/MarkdownListener.cpp
+    source/markdown/generated/MarkdownParser.cpp
+    source/markdown/generated/MarkdownVisitor.cpp
+    include/markdown/backend/html_backend.h source/markdown/backend/html_backend.cpp
+    include/markdown/Marky.h source/markdown/Marky.cpp
 )
 
 target_include_directories(journy2
         PRIVATE
         ${CMAKE_SOURCE_DIR}/include
 
-        ${marky_ANTLR_INCLUDE_DIRS}
-        ${marky_SOURCE_DIR}/include
+        ${ANTLR4_INCLUDE_DIR}
+        #${marky_ANTLR_INCLUDE_DIRS}
+        #${antlr_SOURCE_DIR}/runtime/Cpp/runtime/src
 )
 
 target_link_libraries(journy2
@@ -60,6 +58,14 @@ target_link_libraries(journy2
         imgui::imgui
         glfw
 
+        PUBLIC
         unofficial::sqlite3::sqlite3
-        #marky
+        antlr4_shared
 )
+
+# Useful for debugging
+#get_cmake_property(_variableNames VARIABLES)
+#list (SORT _variableNames)
+#foreach (_variableName ${_variableNames})
+#    message(STATUS "${_variableName}=${${_variableName}}")
+#endforeach()
