@@ -24,8 +24,6 @@ void Application::Startup()
     {
         std::cout << e.toString() << std::endl;
     }
-
-    //ImGui::PushFont(journy::ui::fonts::FontPool::Roboto_Regular);
 }
 
 void Application::Teardown() {
@@ -61,6 +59,11 @@ void Application::BuildUi() {
 
             ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, {16.f, 4.f});
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {16.f, 4.f});
+
+            ImGui::Button("New");
+
+            ImGui::SameLine();
+            ImGui::Button("Delete");
 
             if(ImGui::BeginTable("Entries", 1, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings))
             {
