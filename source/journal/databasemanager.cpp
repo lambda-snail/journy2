@@ -1,5 +1,6 @@
+#include <chrono>
 #include <iostream>
-#include <assert.h>
+#include <cassert>
 
 #include "journal/databasemanager.h"
 #include "journal/entry.h"

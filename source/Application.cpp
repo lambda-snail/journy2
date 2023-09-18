@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 
 #include "Application.h"
@@ -7,7 +8,7 @@
 
 void Application::Startup()
 {
-    p_Db = std::make_unique<todo::DatabaseManager>(R"(C:\Projects\cpp\journy2\resources\todo.db)", false);
+    p_Db = std::make_unique<todo::DatabaseManager>(R"(resources\todo.db)", false);
 
     std::chrono::year_month_day min{};// { std::chrono::January / 1 / 2023 };
     std::chrono::year_month_day max{};// { std::chrono::December / 31 / 2023 };
