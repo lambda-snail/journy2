@@ -5,6 +5,7 @@
 
 #include "imgui.h"
 #include "ui/fonthelpers.h"
+#include "ui/datepicker/datepicker.h"
 
 void Application::Startup()
 {
@@ -105,6 +106,13 @@ void Application::BuildUi() {
 
     ImGui::End();
 
+    ImGui::Begin("Calendar Window");
+
+    int lvl = 0;
+    std::chrono::year_month_day t{ std::chrono::January/1/2023 };
+    ShowDatePicker("Date Picker", &lvl, &t);
+
+    ImGui::End();
 
 
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
