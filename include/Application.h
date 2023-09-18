@@ -21,6 +21,8 @@ private:
     bool show_demo_window = true;
     bool show_another_window = false;
 
+    bool bIsCreateModalOpen {false };
+
     std::vector<todo::JournalEntry> journalEntries;
     std::unique_ptr<todo::DatabaseManager> p_Db;
 

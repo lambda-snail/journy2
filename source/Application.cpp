@@ -9,7 +9,7 @@
 
 void Application::Startup()
 {
-    p_Db = std::make_unique<todo::DatabaseManager>(R"(resources\todo.db)", false);
+    p_Db = std::make_unique<todo::DatabaseManager>(R"(../resources/todo.db)", false);
 
     std::chrono::year_month_day min{};// { std::chrono::January / 1 / 2023 };
     std::chrono::year_month_day max{};// { std::chrono::December / 31 / 2023 };
@@ -61,10 +61,50 @@ void Application::BuildUi() {
             ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, {16.f, 4.f});
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {16.f, 4.f});
 
-            ImGui::Button("New");
+            if(ImGui::Button("New"))
+            {
+                ImGui::OpenPopup("NewEntry");
+            }
 
             ImGui::SameLine();
             ImGui::Button("Delete");
+
+            if(ImGui::BeginPopupModal("NewEntry"))
+            {
+                ImGui::Text("Choose a date for the entry");
+
+                static int day {0};
+                ImGui::InputInt("Day", &day);
+                if(day < 1) day = 1;
+                if(day > 32) day = 32;
+
+                const char* items[] = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+                static int month = 0;
+                ImGui::Combo("Month", &month, items, IM_ARRAYSIZE(items));
+
+                static int year {2023};
+                ImGui::InputInt("Year", &year);
+                if(year < 1990) year = 1990;
+
+                bool create = ImGui::Button("Create"); ImGui::SameLine();
+                bool cancel = ImGui::Button("Cancel");
+
+                if(create)
+                {
+                    std::chrono::year_month_day date( std::chrono::day{static_cast<unsigned int>(day)} / (month+1) / year);
+                    todo::JournalEntry entry{ date, {} };
+                    p_Db->AddNewJournalEntry(entry);
+                    journalEntries.push_back(entry);
+                }
+
+                if(create || cancel)
+                {
+                    //bIsCreateModalOpen = false;
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
 
             if(ImGui::BeginTable("Entries", 1, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings))
             {
@@ -106,13 +146,13 @@ void Application::BuildUi() {
 
     ImGui::End();
 
-    ImGui::Begin("Calendar Window");
 
-    int lvl = 0;
-    std::chrono::year_month_day t{ std::chrono::January/1/2023 };
-    ShowDatePicker("Date Picker", &lvl, &t);
 
-    ImGui::End();
+    //ImGui::Begin("Calendar Window");
+    //int lvl = 0;
+    //std::chrono::year_month_day t{ std::chrono::January/1/2023 };
+    //ShowDatePicker("Date Picker", &lvl, &t);
+    //ImGui::End();
 
 
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
