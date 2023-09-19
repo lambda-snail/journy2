@@ -1,5 +1,6 @@
 #include "ui/themes.h"
 #include "ui/markdowneditor.h"
+#include "ui/fonthelpers.h"
 #include "markdown/Marky.h"
 #include "markdown/markdowntovector.h"
 
@@ -31,11 +32,14 @@ void journy::ui::MarkdownEditor::BuildUi() {
     ImGui::Begin(entry->toString().c_str(), &bIsOpen, flags);
 
         ImGui::BeginChild("Command", {0.f, command_bar_height }, false);
-            if(ImGui::Button("Edit")) bEditMode = true;
+            ImGui::PushFont(journy::ui::fonts::FontPool::FontAwesome_Regular);
+            //if(ImGui::Button("Edit")) bEditMode = true;
+            ImGui::Button(R"(\xef\x8a\xb9)");
 
             ImGui::SameLine();
 
             if(ImGui::Button("Read"))  bEditMode = false;
+            ImGui::PopFont();
         ImGui::EndChild();
 
         if(bEditMode)

@@ -16,6 +16,8 @@ namespace journy::ui::fonts {
         static ImFont* Roboto_Header1;
         static ImFont* Roboto_Header2;
 
+        static ImFont* FontAwesome_Regular;
+
         static ImFont* AddFont(char const* file, float pixel_size);
     };
 }
