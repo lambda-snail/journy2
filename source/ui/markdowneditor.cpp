@@ -6,7 +6,7 @@
 #include "imgui.h"
 #include "imgui_stdlib.h"
 
-void journy::ui::MarkdownEditor::BuildUi() {
+void journy::ui::MarkdownEditor::BuildUi(std::chrono::time_point<std::chrono::system_clock> now) {
 
     if(not bIsOpen)
     {
@@ -46,7 +46,8 @@ void journy::ui::MarkdownEditor::BuildUi() {
             ImGui::PushStyleColor(ImGuiCol_FrameBg, static_cast<ImVec4>(themes::PrimaryColor_100)); // Removes red tint of input text
             ImGui::BeginChild("Writer", { width, 0.f }, true);
 
-            ImGui::InputTextMultiline("Markdown",
+            // If content is dirty, do not reset when no further change
+            bIsDirty |= ImGui::InputTextMultiline("Markdown",
                                       &entry->getContent(),
                                       { width, height - command_bar_height * 3 }, // 3 seems to make it fit well enough
                                       ImGuiInputTextFlags_AllowTabInput | ImGuiInputTextFlags_CallbackAlways
@@ -72,7 +73,7 @@ void journy::ui::MarkdownEditor::BuildUi() {
     ImGui::End();
 }
 
-journy::ui::MarkdownEditor::MarkdownEditor(todo::JournalEntry *e) : entry { e } {}
+journy::ui::MarkdownEditor::MarkdownEditor(todo::JournalEntry *e) : entry { e }{}
 
 bool journy::ui::MarkdownEditor::IsOpen() const {
     return bIsOpen;
