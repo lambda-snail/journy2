@@ -30,7 +30,7 @@ void todo::JournalEntry::setDate(std::chrono::year_month_day const& newDate)
     Date = newDate;
 }
 
-std::string todo::JournalEntry::getContent() const
+std::string& todo::JournalEntry::getContent()
 {
     return Content;
 }
@@ -58,5 +58,9 @@ void todo::JournalEntry::setId(long long newId)
     if (Id == newId)
         return;
     Id = newId;
+}
+
+std::string const& todo::JournalEntry::getContent() const {
+    return Content;
 }
 

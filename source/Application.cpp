@@ -95,6 +95,8 @@ void Application::BuildUi() {
                     todo::JournalEntry entry{ date, {} };
                     p_Db->AddNewJournalEntry(entry);
                     journalEntries.push_back(entry);
+
+
                 }
 
                 if(create || cancel)

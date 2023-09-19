@@ -1,8 +1,10 @@
-#include "imgui.h"
-
+#include "ui/themes.h"
 #include "ui/markdowneditor.h"
 #include "markdown/Marky.h"
 #include "markdown/markdowntovector.h"
+
+#include "imgui.h"
+#include "imgui_stdlib.h"
 
 void journy::ui::MarkdownEditor::BuildUi() {
 
@@ -23,9 +25,12 @@ void journy::ui::MarkdownEditor::BuildUi() {
         bShouldFocusNextPass = false;
     }
 
+    auto const& clear_color = ImGui::GetStyle().Colors[ImGuiCol_FrameBg];
+    float const command_bar_height = 32.f;
+
     ImGui::Begin(entry->toString().c_str(), &bIsOpen, flags);
 
-        ImGui::BeginChild("Command", { 0.f, 32.f }, false);
+        ImGui::BeginChild("Command", {0.f, command_bar_height }, false);
             if(ImGui::Button("Edit")) bEditMode = true;
 
             ImGui::SameLine();
@@ -35,10 +40,20 @@ void journy::ui::MarkdownEditor::BuildUi() {
 
         if(bEditMode)
         {
-            ImGui::BeginChild("Writer", { ImGui::GetWindowWidth() * .5f, 0.f }, true);
-            ImGui::TextUnformatted("Writing some stuff!");
-            ImGui::EndChild();
+            float width = ImGui::GetWindowWidth() * .5f;
+            float height = ImGui::GetWindowHeight();
 
+            ImGui::PushStyleColor(ImGuiCol_FrameBgActive, static_cast<ImVec4>(themes::PrimaryColor_100));
+            ImGui::BeginChild("Writer", { width, 0.f }, true);
+
+            ImGui::InputTextMultiline("Markdown",
+                                      &entry->getContent(),
+                                      { width, height - command_bar_height * 3 }, // 3 seems to make it fit well enough
+                                      ImGuiInputTextFlags_AllowTabInput | ImGuiInputTextFlags_CallbackAlways
+                                  );
+
+            ImGui::EndChild();
+            ImGui::PopStyleColor();
             ImGui::SameLine();
         }
 
@@ -46,14 +61,10 @@ void journy::ui::MarkdownEditor::BuildUi() {
 
             ImDrawList* draw = ImGui::GetWindowDrawList();
 
-            auto const& clear_color = ImGui::GetStyle().Colors[ImGuiCol_FrameBg];
-
             journy::markdown::MarkdownToVector backend(draw, clear_color);
 
             marky::Marky marky;
             marky.process_markdown(&backend, entry->getContent());
-
-            //ImGui::TextUnformatted(entry->getContent().c_str());
 
         ImGui::EndChild();
 

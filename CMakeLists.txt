@@ -45,6 +45,7 @@ add_executable(journy2
 
     include/ui/fonthelpers.h source/ui/fonthelpers.cpp
     include/ui/datepicker/datepicker.h source/ui/datepicker/datepicker.cpp
+        source/ui/themes.cpp
 )
 
 target_include_directories(journy2

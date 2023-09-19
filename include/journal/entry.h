@@ -22,7 +22,8 @@ namespace todo {
         [[nodiscard]] std::chrono::year_month_day getDate() const;
         void setDate(std::chrono::year_month_day const& newDate);
 
-        [[nodiscard]] std::string getContent() const;
+        [[nodiscard]] std::string const& getContent() const;
+        [[nodiscard]] std::string& getContent();
         void setContent(std::string const& newContent);
 
         [[nodiscard]] std::string toString() const;
