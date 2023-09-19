@@ -43,7 +43,7 @@ void journy::ui::MarkdownEditor::BuildUi() {
             float width = ImGui::GetWindowWidth() * .5f;
             float height = ImGui::GetWindowHeight();
 
-            ImGui::PushStyleColor(ImGuiCol_FrameBgActive, static_cast<ImVec4>(themes::PrimaryColor_100));
+            ImGui::PushStyleColor(ImGuiCol_FrameBg, static_cast<ImVec4>(themes::PrimaryColor_100)); // Removes red tint of input text
             ImGui::BeginChild("Writer", { width, 0.f }, true);
 
             ImGui::InputTextMultiline("Markdown",
