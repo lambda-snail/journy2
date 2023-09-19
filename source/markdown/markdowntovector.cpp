@@ -43,7 +43,7 @@ void journy::markdown::MarkdownToVector::enterHeader(marky::MarkdownParser::Head
     int lvl = static_cast<int>(ctx->HEADER_START().size());
     if(lvl <= HTML_MaxHeaderLevel)
     {
-        ImFont const* font = nullptr;
+        ImFont* font = nullptr;
         switch(lvl)
         {
             case 1:
@@ -57,7 +57,7 @@ void journy::markdown::MarkdownToVector::enterHeader(marky::MarkdownParser::Head
                 break;
         }
 
-        ImGui::PushFont(journy::ui::fonts::FontPool::Roboto_Header1);
+        ImGui::PushFont(font);
     }
 }
 
