@@ -62,7 +62,11 @@ void journy::markdown::MarkdownToVector::enterHeader(marky::MarkdownParser::Head
 }
 
 void journy::markdown::MarkdownToVector::exitHeader(marky::MarkdownParser::HeaderContext* ctx) {
-    ImGui::PopFont();
+    int lvl = static_cast<int>(ctx->HEADER_START().size());
+    if(lvl <= HTML_MaxHeaderLevel)
+    {
+        ImGui::PopFont();
+    }
 }
 
 void journy::markdown::MarkdownToVector::enterItalics_stream(marky::MarkdownParser::Italics_streamContext* ctx) {

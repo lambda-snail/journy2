@@ -6,7 +6,7 @@
 #include "imgui.h"
 #include "imgui_stdlib.h"
 
-void journy::ui::MarkdownEditor::BuildUi(std::chrono::time_point<std::chrono::system_clock> now) {
+void journy::ui::MarkdownEditor::BuildUi() {
 
     if(not bIsOpen)
     {
