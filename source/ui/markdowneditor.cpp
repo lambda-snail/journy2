@@ -33,8 +33,13 @@ void journy::ui::MarkdownEditor::BuildUi() {
 
         ImGui::BeginChild("Command", {0.f, command_bar_height }, false);
             //ImGui::PushFont(journy::ui::fonts::FontPool::FontAwesome_Regular);
+
+            // https://github.com/ocornut/imgui/issues/565
             if(ImGui::Button("Edit")) bEditMode = true;
-            //ImGui::Button(R"(\xef\x8a\xb9)");
+            ImGui::Button((const char*)u8"\ue072");
+            ImGui::DebugTextEncoding((const char*)u8"\ue072");
+
+
 
             ImGui::SameLine();
 
