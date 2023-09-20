@@ -22,6 +22,7 @@ void journy::ui::fonts::FontPool::InitFonts() {
     Roboto_Regular = AddFont("resources/fonts/Roboto-Regular.ttf", 12);
 
     // https://github.com/juliettef/IconFontCppHeaders/tree/main
+    // https://www.fileformat.info/info/unicode/char/e072/index.htm
     float baseFontSize = 14.f;
     static const ImWchar icons_ranges[] = { 0xe000, 0xf8ff, 0 };
     ImFontConfig icons_config;

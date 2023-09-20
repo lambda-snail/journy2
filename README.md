@@ -36,3 +36,10 @@ Dependencies are all managed using vcpkg or CMake.
 ### marky
 
 [Marky](https://github.com/lambda-snail/marky) is a bare-bones markdown processor that parses markdown and produces html. It has been created for journy2 but is deployed as a separate project to facilitate re-use in other projects.
+
+# Credits
+
+This software includes resources or code, or parts of code from the following projects. All credits for these works go to the original authors.
+
+- [IconFontCppHeaders](https://github.com/juliettef/IconFontCppHeaders/tree/main)
+- [Google Material Icons](https://github.com/google/material-design-icons)
