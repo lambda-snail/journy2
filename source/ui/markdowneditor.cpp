@@ -35,11 +35,7 @@ void journy::ui::MarkdownEditor::BuildUi() {
             //ImGui::PushFont(journy::ui::fonts::FontPool::FontAwesome_Regular);
 
             // https://github.com/ocornut/imgui/issues/565
-            if(ImGui::Button("Edit")) bEditMode = true;
-            ImGui::Button((const char*)u8"\ue072");
-            ImGui::DebugTextEncoding((const char*)u8"\ue072");
-
-
+            if(ImGui::Button((const char*)u8"\ue072")) bEditMode = true;
 
             ImGui::SameLine();
 
