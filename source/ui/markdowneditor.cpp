@@ -32,20 +32,19 @@ void journy::ui::MarkdownEditor::BuildUi() {
     ImGui::Begin(entry->toString().c_str(), &bIsOpen, flags);
 
         ImGui::BeginChild("Command", {0.f, command_bar_height }, false);
-            ImGui::PushFont(journy::ui::fonts::FontPool::FontAwesome_Regular);
-            //if(ImGui::Button("Edit")) bEditMode = true;
-            ImGui::Button(R"(\xef\x8a\xb9)");
+            //ImGui::PushFont(journy::ui::fonts::FontPool::FontAwesome_Regular);
+            if(ImGui::Button("Edit")) bEditMode = true;
+            //ImGui::Button(R"(\xef\x8a\xb9)");
 
             ImGui::SameLine();
 
             if(ImGui::Button("Read"))  bEditMode = false;
-            ImGui::PopFont();
+            //ImGui::PopFont();
         ImGui::EndChild();
 
         if(bEditMode)
         {
             float width = ImGui::GetWindowWidth() * .5f;
-            float height = ImGui::GetWindowHeight();
 
             ImGui::PushStyleColor(ImGuiCol_FrameBg, static_cast<ImVec4>(themes::PrimaryColor_100)); // Removes red tint of input text
             ImGui::BeginChild("Writer", { width, 0.f }, true);
@@ -53,7 +52,7 @@ void journy::ui::MarkdownEditor::BuildUi() {
             // If content is dirty, do not reset when no further change
             bIsDirty |= ImGui::InputTextMultiline("Markdown",
                                       &entry->getContent(),
-                                      { width, height - command_bar_height * 3 }, // 3 seems to make it fit well enough
+                                      { ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y },
                                       ImGuiInputTextFlags_AllowTabInput | ImGuiInputTextFlags_CallbackAlways
                                   );
 
