@@ -26,25 +26,30 @@ void journy::ui::MarkdownEditor::BuildUi() {
         bShouldFocusNextPass = false;
     }
 
-    auto const& clear_color = ImGui::GetStyle().Colors[ImGuiCol_FrameBg];
-    float const command_bar_height = 32.f;
+    static auto const& clear_color = ImGui::GetStyle().Colors[ImGuiCol_FrameBg];
+    static auto const& frameBackground = static_cast<ImVec4>(themes::PrimaryColor_100);
+    static float const command_bar_height = 32.f;
 
     ImGui::Begin(entry->toString().c_str(), &bIsOpen, flags);
-
         ImGui::BeginChild("Command", {0.f, command_bar_height }, false);
+            ImVec2 buttonSize = { command_bar_height, command_bar_height };
             // https://github.com/ocornut/imgui/issues/565
-            if(ImGui::Button(ICON_MD_EDIT_NOTE)) bEditMode = true;
+            if(ImGui::Button(ICON_MD_EDIT_NOTE, buttonSize)) bEditMode = true;
 
             ImGui::SameLine();
+            if(ImGui::Button(ICON_MD_BOOK, buttonSize))  bEditMode = false;
 
-            if(ImGui::Button("Read"))  bEditMode = false;
+            ImGui::SameLine();
+            ImGui::Button(ICON_MD_SAVE, buttonSize);
         ImGui::EndChild();
+
+        ImGui::Separator();
 
         if(bEditMode)
         {
             float width = ImGui::GetWindowWidth() * .5f;
 
-            ImGui::PushStyleColor(ImGuiCol_FrameBg, static_cast<ImVec4>(themes::PrimaryColor_100)); // Removes red tint of input text
+            ImGui::PushStyleColor(ImGuiCol_FrameBg, frameBackground); // Removes red tint of input text
             ImGui::BeginChild("Writer", { width, 0.f }, true);
 
             // If content is dirty, do not reset when no further change
@@ -59,7 +64,7 @@ void journy::ui::MarkdownEditor::BuildUi() {
             ImGui::SameLine();
         }
 
-        ImGui::BeginChild("Reader", {}, true);
+        ImGui::BeginChild("Reader", {}, bEditMode);
 
             ImDrawList* draw = ImGui::GetWindowDrawList();
 
