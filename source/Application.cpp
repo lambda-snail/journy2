@@ -107,6 +107,8 @@ void Application::BuildUi() {
                 ImGui::EndPopup();
             }
 
+            ImGui::Separator();
+
             if(ImGui::BeginTable("Entries", 1, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings))
             {
                 for (auto& entry : journalEntries)
