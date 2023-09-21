@@ -76,3 +76,11 @@ void journy::markdown::MarkdownToVector::enterItalics_stream(marky::MarkdownPars
 void journy::markdown::MarkdownToVector::exitItalics_stream(marky::MarkdownParser::Italics_streamContext* ctx) {
     ImGui::PopFont();
 }
+
+void journy::markdown::MarkdownToVector::enterBold_stream(marky::MarkdownParser::Bold_streamContext *ctx) {
+    ImGui::PushFont(journy::ui::fonts::FontPool::Roboto_Bold);
+}
+
+void journy::markdown::MarkdownToVector::exitBold_stream(marky::MarkdownParser::Bold_streamContext *ctx) {
+    ImGui::PopFont();
+}

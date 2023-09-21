@@ -5,6 +5,7 @@
 
 #include "imgui.h"
 #include "ui/fonthelpers.h"
+#include "ui/font/iconsmaterialdesign.h"
 #include "ui/datepicker/datepicker.h"
 
 void Application::Startup()
@@ -44,9 +45,9 @@ void Application::BuildUi() {
 #endif
 
     auto vp_dockId = ImGui::DockSpaceOverViewport(vp, ImGuiDockNodeFlags_None);
-    ImGui::SetNextWindowDockID(vp_dockId);
+    //ImGui::SetNextWindowDockID(vp_dockId);
 
-    ImGui::Begin("Main Window", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoResize  );
+    //ImGui::Begin("Main Window", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoResize  );
 
         if(bShouldInitDockEntryList)
         {
@@ -55,19 +56,18 @@ void Application::BuildUi() {
             bShouldInitDockEntryList = false;
         }
 
-        //ImGui::BeginChild("Entry List", {256.f, 0.f}, true, ImGuiWindowFlags_None);
         ImGui::Begin("Entry List", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar );
 
             ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, {16.f, 4.f});
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {16.f, 4.f});
 
-            if(ImGui::Button("New"))
+            if(ImGui::Button(ICON_MD_ADD))
             {
                 ImGui::OpenPopup("NewEntry");
             }
 
             ImGui::SameLine();
-            ImGui::Button("Delete");
+            ImGui::Button(ICON_MD_DELETE);
 
             if(ImGui::BeginPopupModal("NewEntry"))
             {
@@ -101,7 +101,6 @@ void Application::BuildUi() {
 
                 if(create || cancel)
                 {
-                    //bIsCreateModalOpen = false;
                     ImGui::CloseCurrentPopup();
                 }
 
@@ -149,7 +148,7 @@ void Application::BuildUi() {
         {
             editor->BuildUi(saveEntry);
         }
-    ImGui::End();
+    //ImGui::End();
 //
 //    ImGui::BeginChild("Status Bar", ImVec2 { 0, 32.f });
 //        ImGui::Text("Status: ");
