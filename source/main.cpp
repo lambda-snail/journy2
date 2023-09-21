@@ -1,76 +1,6 @@
-//#include <wx/wx.h>
-//#include <wx/config.h>
-//#include <wx/stdpaths.h>
-//#include <wx/filename.h>
-//
-//#include <memory>
-//#include "ui/journymainframe.h"
-//
-//#include "config_strings.h"
-//#include "journal/entry.h"
-//#include "journal/databasemanager.h"
-//
-//class MyApp: public wxApp {
-//public:
-//    bool OnInit() override;
-//private:
-//    std::shared_ptr<todo::DatabaseManager> p_Db;
-//    std::shared_ptr<wxConfig> config;
-//
-//    void ensure_exists_initial_db_path(wxString& outPath, bool& shouldInitializeDb);
-//};
-//
-//IMPLEMENT_APP(MyApp)
-//
-//bool MyApp::OnInit()
-//{
-//    config = std::make_shared<wxConfig>(App::name);
-//
-//    bool shouldInitDb { false };
-//    wxString db_path;
-//    ensure_exists_initial_db_path(db_path, shouldInitDb);
-//
-//    p_Db = std::make_shared<todo::DatabaseManager>(db_path, shouldInitDb);
-//
-//    wxInitAllImageHandlers();
-//    auto* frame = new JournyMainFrame(p_Db, nullptr, wxID_ANY, wxEmptyString);
-//    frame->SetUpUi();
-//
-//    SetTopWindow(frame);
-//    frame->Center();
-//    frame->Show();
-//    return true;
-//}
-//
-//void MyApp::ensure_exists_initial_db_path(wxString& outPath, bool& shouldInitializeDb) {
-//    if ( not config->Read(Config::last_db_location, &outPath) ) {
-//        wxFileName path;
-//        auto const& standardPaths = wxStandardPaths::Get();
-//
-//        path.AssignDir(standardPaths.GetUserDataDir());
-//        if(not path.DirExists())
-//        {
-//            path.Mkdir(wxPOSIX_USER_EXECUTE | wxPOSIX_USER_READ | wxPOSIX_USER_WRITE, wxPATH_MKDIR_FULL);
-//        }
-//
-//        path.SetName(Config::db_name);
-//        shouldInitializeDb = not path.FileExists();
-//
-//        outPath = path.GetFullPath();
-//        config->Write(Config::last_db_location, outPath);
-//    }
-//}
-
-// Dear ImGui: standalone example application for Glfw + Vulkan
+// Entry point of application, based on Dear ImGui: standalone example application for Glfw + Vulkan
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
-
-// Important note to the reader who wish to integrate imgui_impl_vulkan.cpp/.h in their own engine/app.
-// - Common ImGui_ImplVulkan_XXX functions and structures are used to interface with imgui_impl_vulkan.cpp/.h.
-//   You will use those if you want to use this rendering backend in your engine/app.
-// - Helper ImGui_ImplVulkanH_XXX functions and structures are only used by this example (main.cpp) and by
-//   the backend itself (imgui_impl_vulkan.cpp), but should PROBABLY NOT be used by your own engine/app code.
-// Read comments in imgui_impl_vulkan.h.
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -85,8 +15,9 @@
 
 #define IMGUI_USER_CONFIG "include/config.h"
 
-#include "ui/themes.h"
+#include "applicationstrings.h"
 #include "Application.h"
+#include "ui/themes.h"
 #include "ui/fonthelpers.h"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
@@ -453,7 +384,7 @@ int main(int, char**)
 
     // Create window with Vulkan context
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+Vulkan example", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, APPLICATION_TITLE, nullptr, nullptr);
     if (!glfwVulkanSupported())
     {
         printf("GLFW: Vulkan Not Supported\n");

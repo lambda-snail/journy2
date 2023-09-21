@@ -47,6 +47,7 @@ add_executable(journy2
     source/markdown/generated/MarkdownVisitor.cpp
     include/markdown/backend/html_backend.h source/markdown/backend/html_backend.cpp
     include/markdown/Marky.h source/markdown/Marky.cpp
+        include/applicationstrings.h
 )
 
 target_include_directories(journy2
