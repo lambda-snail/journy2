@@ -58,9 +58,9 @@ namespace themes
         colors[ImGuiCol_ResizeGrip]             = AccentColor_100;
         colors[ImGuiCol_ResizeGripHovered]      = AccentColor_200;
         colors[ImGuiCol_ResizeGripActive]       = White;
-        colors[ImGuiCol_Tab]                    = SecondaryColor_100;
-        colors[ImGuiCol_TabHovered]             = SecondaryColor_200;
-        colors[ImGuiCol_TabActive]              = ImVec4(0.19f, 0.19f, 0.19f, 0.57f);
+        colors[ImGuiCol_Tab]                    = SecondaryColor_60;
+        colors[ImGuiCol_TabHovered]             = SecondaryColor_300;
+        colors[ImGuiCol_TabActive]              = SecondaryColor_100;
         colors[ImGuiCol_TabUnfocused]           = ImVec4(0.05f, 0.05f, 0.05f, 0.90f);
         colors[ImGuiCol_TabUnfocusedActive]     = ImVec4(0.13f, 0.13f, 0.13f, 0.74f);
         colors[ImGuiCol_DockingPreview]         = ImVec4(0.47f, 0.47f, 0.47f, 0.47f);
