@@ -18,12 +18,13 @@ ImFont* journy::ui::fonts::FontPool::Roboto_Header2 { nullptr };
 
 ImFont* journy::ui::fonts::FontPool::FontAwesome_Regular { nullptr };
 
-void journy::ui::fonts::FontPool::InitFonts() {
-    Roboto_Regular = AddFont("resources/fonts/Roboto-Regular.ttf", 12);
+void journy::ui::fonts::FontPool::InitFonts()
+{
+    float baseFontSize = 13.f;
+    Roboto_Regular = AddFont("resources/fonts/Roboto-Regular.ttf", baseFontSize);
 
     // https://github.com/juliettef/IconFontCppHeaders/tree/main
     // https://www.fileformat.info/info/unicode/char/e072/index.htm
-    float baseFontSize = 14.f;
     static const ImWchar icons_ranges[] = { 0xe000, 0xf8ff, 0 };
     ImFontConfig icons_config;
     icons_config.MergeMode = true;

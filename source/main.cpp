@@ -568,8 +568,6 @@ int main(int, char**)
         ImGui_ImplVulkan_DestroyFontUploadObjects();
     }
 
-    //ImGui::PushFont(journy::ui::fonts::FontPool::Roboto_Regular);
-
     // Our application
     Application app{ io };
     app.Startup();
@@ -628,8 +626,6 @@ int main(int, char**)
     }
 
     app.Teardown();
-
-    //ImGui::PopFont();
 
     // Cleanup
     err = vkDeviceWaitIdle(g_Device);
