@@ -17,14 +17,19 @@ find_package(antlr4-runtime CONFIG REQUIRED)
 
 add_executable(journy2
     source/main.cpp
-    include/ui/themes.h
 
     include/journal/entry.h source/journal/entry.cpp
     include/journal/databasemanager.h source/journal/databasemanager.cpp
 
     source/Application.cpp include/Application.h
-    include/ui/markdowneditor.h source/ui/markdowneditor.cpp
     include/markdown/markdowntovector.h source/markdown/markdowntovector.cpp
+
+    # Ui
+    include/ui/markdowneditor.h source/ui/markdowneditor.cpp
+    include/ui/fonthelpers.h source/ui/fonthelpers.cpp
+    include/ui/datepicker/datepicker.h source/ui/datepicker/datepicker.cpp
+    source/ui/themes.cpp include/ui/themes.h
+    include/ui/font/iconsmaterialdesign.h
 
     # Markdown parser
     include/markdown/parser/MarkdownBaseListener.h
@@ -42,10 +47,6 @@ add_executable(journy2
     source/markdown/generated/MarkdownVisitor.cpp
     include/markdown/backend/html_backend.h source/markdown/backend/html_backend.cpp
     include/markdown/Marky.h source/markdown/Marky.cpp
-
-    include/ui/fonthelpers.h source/ui/fonthelpers.cpp
-    include/ui/datepicker/datepicker.h source/ui/datepicker/datepicker.cpp
-        source/ui/themes.cpp
 )
 
 target_include_directories(journy2
