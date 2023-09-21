@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "journal/entry.h"
 
 namespace journy::ui
@@ -14,7 +16,7 @@ namespace journy::ui
 
         void SetFocusNextPass();
 
-        void BuildUi();
+        void BuildUi( std::function<void(todo::JournalEntry const&)> const& saveEntry );
     private:
         todo::JournalEntry* entry;
 

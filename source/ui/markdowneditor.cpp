@@ -7,7 +7,7 @@
 #include "imgui.h"
 #include "imgui_stdlib.h"
 
-void journy::ui::MarkdownEditor::BuildUi() {
+void journy::ui::MarkdownEditor::BuildUi( std::function<void(todo::JournalEntry const&)> const& saveEntry ) {
 
     if(not bIsOpen)
     {
@@ -40,7 +40,11 @@ void journy::ui::MarkdownEditor::BuildUi() {
             if(ImGui::Button(ICON_MD_BOOK, buttonSize))  bEditMode = false;
 
             ImGui::SameLine();
-            ImGui::Button(ICON_MD_SAVE, buttonSize);
+            if(ImGui::Button(ICON_MD_SAVE, buttonSize))
+            {
+                saveEntry(*entry);
+                bIsDirty = false;
+            }
         ImGui::EndChild();
 
         ImGui::Separator();
