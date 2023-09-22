@@ -55,8 +55,6 @@ target_include_directories(journy2
         ${CMAKE_SOURCE_DIR}/include
 
         ${ANTLR4_INCLUDE_DIR}
-        #${marky_ANTLR_INCLUDE_DIRS}
-        #${antlr_SOURCE_DIR}/runtime/Cpp/runtime/src
 )
 
 target_link_libraries(journy2
