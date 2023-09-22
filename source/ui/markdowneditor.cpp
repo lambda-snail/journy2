@@ -26,6 +26,8 @@ void journy::ui::MarkdownEditor::BuildUi( std::function<void(todo::JournalEntry 
         bShouldFocusNextPass = false;
     }
 
+    std::vector<journy::markdown::MarkdownOutlineDescriptor> const* outline = nullptr;
+
     static auto const& clear_color = ImGui::GetStyle().Colors[ImGuiCol_FrameBg];
     static auto const& frameBackground = static_cast<ImVec4>(themes::PrimaryColor_100);
     static float const command_bar_height = 32.f;
@@ -34,16 +36,29 @@ void journy::ui::MarkdownEditor::BuildUi( std::function<void(todo::JournalEntry 
         ImGui::BeginChild("Command", {0.f, command_bar_height }, false);
             ImVec2 buttonSize = { command_bar_height, command_bar_height };
             // https://github.com/ocornut/imgui/issues/565
-            if(ImGui::Button(ICON_MD_EDIT_NOTE, buttonSize)) bEditMode = true;
+            if(ImGui::Button(ICON_MD_EDIT_NOTE, buttonSize))
+            {
+                bEditMode = true;
+                bOutlineMode = false;
+            }
 
             ImGui::SameLine();
-            if(ImGui::Button(ICON_MD_BOOK, buttonSize))  bEditMode = false;
+            if(ImGui::Button(ICON_MD_BOOK, buttonSize))
+            {
+                bEditMode = false;
+            }
 
             ImGui::SameLine();
             if(ImGui::Button(ICON_MD_SAVE, buttonSize))
             {
                 saveEntry(*entry);
                 bIsDirty = false;
+            }
+
+            ImGui::SameLine();
+            if(ImGui::Button(ICON_MD_FORMAT_LIST_NUMBERED, buttonSize))
+            {
+                bOutlineMode = not bOutlineMode;
             }
         ImGui::EndChild();
 
@@ -77,10 +92,25 @@ void journy::ui::MarkdownEditor::BuildUi( std::function<void(todo::JournalEntry 
             marky::Marky marky;
             marky.process_markdown(&backend, entry->getContent());
 
+            outline = backend.GetOutline();
         ImGui::EndChild();
-
-
     ImGui::End();
+
+    if(bOutlineMode)
+    {
+        ImGui::SameLine();
+        ImGui::Begin("Outline", &bOutlineMode);
+        if(ImGui::TreeNode(entry->toString().c_str()))
+        {
+            // This can probably be done more efficiently ...
+            for(auto const& header : *outline)
+            {
+                ImGui::Text("%s %s", std::string(header.level, '-').c_str(), header.header.c_str());
+            }
+            ImGui::TreePop();
+        }
+        ImGui::End();
+    }
 }
 
 journy::ui::MarkdownEditor::MarkdownEditor(todo::JournalEntry *e) : entry { e }{}

@@ -22,6 +22,7 @@ namespace journy::ui
 
         bool bIsDirty { false };
         bool bEditMode { false };
+        bool bOutlineMode { false };
         bool bIsOpen { true };
         bool bShouldFocusNextPass { false };
     };

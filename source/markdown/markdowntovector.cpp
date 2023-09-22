@@ -58,6 +58,21 @@ void journy::markdown::MarkdownToVector::enterHeader(marky::MarkdownParser::Head
         }
 
         ImGui::PushFont(font);
+
+        // This should probably be improved on later
+        std::string h{};
+//        for(auto const& token : ctx->raw_stream()->getTokens(marky::MarkdownLexer::WORD))
+//        {
+//            h += token->getText() + " ";
+//        }
+
+        auto const& tokens = ctx->raw_stream()->getTokens(marky::MarkdownLexer::WORD);
+        for(int i { 0 }; i < tokens.size(); ++i)
+        {
+            h += tokens[i]->getText() + (i != tokens.size()-1 ? " " : "");
+        }
+
+        outline.push_back({ .header = h, .level = lvl });
     }
 }
 
@@ -83,4 +98,12 @@ void journy::markdown::MarkdownToVector::enterBold_stream(marky::MarkdownParser:
 
 void journy::markdown::MarkdownToVector::exitBold_stream(marky::MarkdownParser::Bold_streamContext *ctx) {
     ImGui::PopFont();
+}
+
+std::vector<journy::markdown::MarkdownOutlineDescriptor> const* journy::markdown::MarkdownToVector::GetOutline() const {
+    return &outline;
+}
+
+void journy::markdown::MarkdownToVector::enterMarkdown(marky::MarkdownParser::MarkdownContext *ctx) {
+    outline.clear();
 }
