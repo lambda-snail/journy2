@@ -7,6 +7,7 @@
 #include "ui/fonthelpers.h"
 #include "ui/font/iconsmaterialdesign.h"
 #include "ui/datepicker/datepicker.h"
+#include "ui/imguiextensions.h"
 
 void Application::Startup()
 {
@@ -65,9 +66,11 @@ void Application::BuildUi() {
             {
                 ImGui::OpenPopup("NewEntry");
             }
+            journy::ui::AddTooltipWithDelay("Start a new journal entry", journy::ui::TooltipDelay::Normal);
 
             ImGui::SameLine();
             ImGui::Button(ICON_MD_DELETE);
+            journy::ui::AddTooltipWithDelay("Delete a journal entry. Warning - cannot be undone!", journy::ui::TooltipDelay::Normal);
 
             if(ImGui::BeginPopupModal("NewEntry"))
             {
