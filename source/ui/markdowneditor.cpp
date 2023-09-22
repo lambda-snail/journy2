@@ -98,14 +98,15 @@ void journy::ui::MarkdownEditor::BuildUi( std::function<void(todo::JournalEntry 
 
     if(bOutlineMode)
     {
-        ImGui::SameLine();
         ImGui::Begin("Outline", &bOutlineMode);
         if(ImGui::TreeNode(entry->toString().c_str()))
         {
             // This can probably be done more efficiently ...
+            static int space_per_indent = 4;
             for(auto const& header : *outline)
             {
-                ImGui::Text("%s %s", std::string(header.level, '-').c_str(), header.header.c_str());
+                auto indent = std::string(header.level * space_per_indent, ' ');
+                ImGui::Text("%s %s", indent.c_str(), header.header.c_str());
             }
             ImGui::TreePop();
         }
