@@ -48,6 +48,8 @@ add_executable(journy2
     include/markdown/backend/html_backend.h source/markdown/backend/html_backend.cpp
     include/markdown/Marky.h source/markdown/Marky.cpp
         include/applicationstrings.h
+        include/ui/imguiextensions.h
+        source/ui/imguiextensions.cpp
 )
 
 target_include_directories(journy2

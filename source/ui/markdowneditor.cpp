@@ -6,6 +6,7 @@
 
 #include "imgui.h"
 #include "imgui_stdlib.h"
+#include "ui/imguiextensions.h"
 
 void journy::ui::MarkdownEditor::BuildUi( std::function<void(todo::JournalEntry const&)> const& saveEntry ) {
 
@@ -41,12 +42,14 @@ void journy::ui::MarkdownEditor::BuildUi( std::function<void(todo::JournalEntry 
                 bEditMode = true;
                 bOutlineMode = false;
             }
+            journy::ui::AddTooltipWithDelay("Enter edit mode to make changes to your entry", journy::ui::TooltipDelay::Normal);
 
             ImGui::SameLine();
             if(ImGui::Button(ICON_MD_BOOK, buttonSize))
             {
                 bEditMode = false;
             }
+            journy::ui::AddTooltipWithDelay("Enter read mode to focus on the content of your entry", journy::ui::TooltipDelay::Normal);
 
             ImGui::SameLine();
             if(ImGui::Button(ICON_MD_SAVE, buttonSize))
@@ -54,12 +57,14 @@ void journy::ui::MarkdownEditor::BuildUi( std::function<void(todo::JournalEntry 
                 saveEntry(*entry);
                 bIsDirty = false;
             }
+            journy::ui::AddTooltipWithDelay("Save the entry content to the database", journy::ui::TooltipDelay::Normal);
 
             ImGui::SameLine();
             if(ImGui::Button(ICON_MD_FORMAT_LIST_NUMBERED, buttonSize))
             {
                 bOutlineMode = not bOutlineMode;
             }
+            journy::ui::AddTooltipWithDelay("Show an outline of the entire entry", journy::ui::TooltipDelay::Normal);
         ImGui::EndChild();
 
         ImGui::Separator();
