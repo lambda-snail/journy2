@@ -19,4 +19,10 @@ namespace journy::ui
      */
     void AddTooltipWithDelay(std::string const& text, TooltipDelay delay);
     void AddTooltipWithDelay(char const* text, TooltipDelay delay);
+
+    /**
+     * Get the scale factor for dpi. All ui elements that needs to scale with dpi should use
+     * this function as the implementation may change in the future.
+     */
+    float GetDpiScaleFactor();
 }
