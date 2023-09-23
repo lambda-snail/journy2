@@ -88,55 +88,55 @@ void Application::BuildUi() {
 
         ImGui::Begin("Entry List", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar );
             auto scale = journy::ui::GetDpiScaleFactor();
-            ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, {scale * 16.f, scale * 4.f});
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {scale * 16.f, scale * 4.f});
-
-            if(ImGui::Button(ICON_MD_ADD))
-            {
-                ImGui::OpenPopup("NewEntry");
-            }
-            journy::ui::AddTooltipWithDelay("Start a new journal entry", journy::ui::TooltipDelay::Normal);
-
-            ImGui::SameLine();
-            ImGui::Button(ICON_MD_DELETE);
-            journy::ui::AddTooltipWithDelay("Delete a journal entry. Warning - cannot be undone!", journy::ui::TooltipDelay::Normal);
-
-            if(ImGui::BeginPopupModal("NewEntry"))
-            {
-                ImGui::Text("Choose a date for the entry");
-
-                static int day {0};
-                ImGui::InputInt("Day", &day);
-                if(day < 1) day = 1;
-                if(day > 32) day = 32;
-
-                const char* items[] = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-                static int month = 0;
-                ImGui::Combo("Month", &month, items, IM_ARRAYSIZE(items));
-
-                static int year {2023};
-                ImGui::InputInt("Year", &year);
-                if(year < 1990) year = 1990;
-
-                bool create = ImGui::Button("Create"); ImGui::SameLine();
-                bool cancel = ImGui::Button("Cancel");
-
-                if(create)
+            float size = 32.f * scale;
+            ImGui::BeginChild("Entry Commands", { 0.f, size });
+                if(ImGui::Button(ICON_MD_ADD, { size, size }))
                 {
-                    std::chrono::year_month_day date( std::chrono::day{static_cast<unsigned int>(day)} / (month+1) / year);
-                    todo::JournalEntry entry{ date, {} };
-                    p_Db->AddNewJournalEntry(entry);
-                    journalEntries.push_back(entry);
+                    ImGui::OpenPopup("NewEntry");
+                }
+                journy::ui::AddTooltipWithDelay("Start a new journal entry", journy::ui::TooltipDelay::Normal);
+
+                ImGui::SameLine();
+                ImGui::Button(ICON_MD_DELETE, { size, size });
+                journy::ui::AddTooltipWithDelay("Delete a journal entry. Warning - cannot be undone!", journy::ui::TooltipDelay::Normal);
+
+                if(ImGui::BeginPopupModal("NewEntry"))
+                {
+                    ImGui::Text("Choose a date for the entry");
+
+                    static int day {0};
+                    ImGui::InputInt("Day", &day);
+                    if(day < 1) day = 1;
+                    if(day > 32) day = 32;
+
+                    const char* items[] = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+                    static int month = 0;
+                    ImGui::Combo("Month", &month, items, IM_ARRAYSIZE(items));
+
+                    static int year {2023};
+                    ImGui::InputInt("Year", &year);
+                    if(year < 1990) year = 1990;
+
+                    bool create = ImGui::Button("Create"); ImGui::SameLine();
+                    bool cancel = ImGui::Button("Cancel");
+
+                    if(create)
+                    {
+                        std::chrono::year_month_day date( std::chrono::day{static_cast<unsigned int>(day)} / (month+1) / year);
+                        todo::JournalEntry entry{ date, {} };
+                        p_Db->AddNewJournalEntry(entry);
+                        journalEntries.push_back(entry);
+                    }
+
+                    if(create || cancel)
+                    {
+                        ImGui::CloseCurrentPopup();
+                    }
+
+                    ImGui::EndPopup();
                 }
 
-                if(create || cancel)
-                {
-                    ImGui::CloseCurrentPopup();
-                }
-
-                ImGui::EndPopup();
-            }
-
+            ImGui::EndChild();
             ImGui::Separator();
 
             if(ImGui::BeginTable("Entries", 1, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings))
@@ -168,8 +168,6 @@ void Application::BuildUi() {
 
                 ImGui::EndTable();
             }
-
-            ImGui::PopStyleVar(2);
         ImGui::End(); // Entry list
 
         auto saveEntry = [this](todo::JournalEntry const& entry) {
