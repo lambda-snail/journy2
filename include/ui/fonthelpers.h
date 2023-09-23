@@ -8,7 +8,7 @@ namespace journy::ui::fonts {
     class FontPool
     {
     public:
-        static void InitFonts();
+        static void InitFonts(float dpi_scale=1.f);
 
         static ImFont* Roboto_Regular;
         static ImFont* Roboto_Bold;
@@ -18,6 +18,6 @@ namespace journy::ui::fonts {
 
         static ImFont* FontAwesome_Regular;
 
-        static ImFont* AddFont(char const* file, float pixel_size);
+        static ImFont* AddFont(char const* file, float pixel_size, float dpi = 1.f);
     };
 }
