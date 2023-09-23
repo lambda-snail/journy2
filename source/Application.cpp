@@ -45,15 +45,11 @@ void Application::BuildUi() {
     ImGui::SetNextWindowSize(io.DisplaySize);
 #endif
 
-    auto vp_dockId = ImGui::DockSpaceOverViewport(vp, ImGuiDockNodeFlags_None);
-    //ImGui::SetNextWindowDockID(vp_dockId);
-
-    //ImGui::Begin("Main Window", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoResize  );
-
         if(bShouldInitDockEntryList)
         {
-            auto const mainWindowId = ImGui::GetWindowDockID();//ImGui::GetItemID();
-            ImGui::SetNextWindowDockID(mainWindowId);
+            //auto const mainWindowId = ImGui::GetWindowDockID();//ImGui::GetItemID();
+            auto vp_dockId = ImGui::DockSpaceOverViewport(vp, ImGuiDockNodeFlags_None);
+            ImGui::SetNextWindowDockID(vp_dockId);
             bShouldInitDockEntryList = false;
         }
 
