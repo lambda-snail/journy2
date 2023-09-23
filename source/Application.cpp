@@ -45,13 +45,46 @@ void Application::BuildUi() {
     ImGui::SetNextWindowSize(io.DisplaySize);
 #endif
 
-        if(bShouldInitDockEntryList)
-        {
-            //auto const mainWindowId = ImGui::GetWindowDockID();//ImGui::GetItemID();
-            auto vp_dockId = ImGui::DockSpaceOverViewport(vp, ImGuiDockNodeFlags_None);
-            ImGui::SetNextWindowDockID(vp_dockId);
-            bShouldInitDockEntryList = false;
-        }
+    // TODO: Split the right window into two, put open entries in the center by default
+    // Open outline in the right-most dock
+    ImGuiID vp_dockspace = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+    static bool init = true;
+    ImGuiID vp_left_d, vp_right_d;
+    if (init) {
+        init = false;
+        ImGui::DockBuilderRemoveNode(vp_dockspace);
+        ImGui::DockBuilderAddNode(vp_dockspace);
+        ImGui::DockBuilderSetNodeSize(vp_dockspace, ImGui::GetMainViewport()->Size);
+
+        ImGui::DockBuilderSplitNode(vp_dockspace, ImGuiDir_Left, 0.2f, &vp_left_d, &vp_right_d);
+        ImGui::DockBuilderDockWindow("Entry List", vp_left_d);
+        ImGui::DockBuilderDockWindow("Dear ImGui Demo", vp_right_d);
+
+        ImGui::DockBuilderFinish(vp_dockspace);
+    }
+
+    //ImGui::Begin("Main Window", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar);
+//        if(bShouldInitDockEntryList)
+//        {
+//            bShouldInitDockEntryList = false;
+//
+//            //auto vp_dockId = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+//            auto main_dockId = ImGui::DockSpace(ImGui::DockId);
+//            ImGui::DockBuilderRemoveNode(main_dockId);
+//            ImGui::DockBuilderAddNode(main_dockId);
+//            ImGui::DockBuilderSetNodeSize(main_dockId, ImGui::GetMainViewport()->Size);
+//
+//            ImGui::DockBuilderSplitNode(main_dockId, ImGuiDir_Left, 0.5f, &vp_dock_left, &vp_dock_right);
+//            ImGui::DockBuilderDockWindow("Entry List", vp_dock_left);
+//            ImGui::DockBuilderDockWindow("Dear ImGui Demo", vp_dock_right);
+//
+//            ImGui::DockBuilderFinish(main_dockId);
+//        }
+
+//        if(bShouldInitDockEntryList && d_left)
+//        {
+//            ImGui::SetNextWindowDockID(d_left);
+//        }
 
         ImGui::Begin("Entry List", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar );
 
@@ -94,8 +127,6 @@ void Application::BuildUi() {
                     todo::JournalEntry entry{ date, {} };
                     p_Db->AddNewJournalEntry(entry);
                     journalEntries.push_back(entry);
-
-
                 }
 
                 if(create || cancel)
