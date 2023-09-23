@@ -87,9 +87,9 @@ void Application::BuildUi() {
 //        }
 
         ImGui::Begin("Entry List", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar );
-
-            ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, {16.f, 4.f});
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {16.f, 4.f});
+            auto scale = journy::ui::GetDpiScaleFactor();
+            ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, {scale * 16.f, scale * 4.f});
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {scale * 16.f, scale * 4.f});
 
             if(ImGui::Button(ICON_MD_ADD))
             {

@@ -27,9 +27,9 @@ void journy::ui::fonts::FontPool::InitFonts(float dpi_scale)
     // https://www.fileformat.info/info/unicode/char/e072/index.htm
     static const ImWchar icons_ranges[] = { 0xe000, 0xf8ff, 0 };
     ImFontConfig icons_config;
-    icons_config.GlyphOffset = { 0,3 }; // 2 for baseFontSize and 3 for 1.3*bfs looks fairly good
+    icons_config.GlyphOffset = { 0,3 * dpi_scale }; // 2 for baseFontSize and 3 for 1.3*bfs looks fairly good
     icons_config.MergeMode = true;
-    FontAwesome_Regular = ImGui::GetIO().Fonts->AddFontFromFileTTF("resources/fonts/MaterialIcons-Regular.ttf", dpi_scale * baseFontSize * 1.3f, &icons_config, icons_ranges);
+    FontAwesome_Regular = ImGui::GetIO().Fonts->AddFontFromFileTTF("resources/fonts/MaterialIcons-Regular.ttf", dpi_scale * baseFontSize, &icons_config, icons_ranges);
 
     Roboto_Bold = AddFont("resources/fonts/Roboto-Bold.ttf", baseFontSize, dpi_scale);
     Roboto_Italic = AddFont("resources/fonts/Roboto-Italic.ttf", baseFontSize, dpi_scale);
