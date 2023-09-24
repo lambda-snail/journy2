@@ -49,10 +49,9 @@ void Application::BuildUi() {
     // Open outline in the right-most dock
     ImGuiID vp_dockspace = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     static bool bShouldInitialize = true;
-    static bool bEntryAddedLastFrame { false };
 
-    ImGuiID vp_left_d, vp_right_d, vp_center_d;
-    if (bShouldInitialize || bEntryAddedLastFrame) {
+    static ImGuiID vp_left_d, vp_right_d, vp_center_d;
+    if (bShouldInitialize){
         bShouldInitialize = false;
         ImGui::DockBuilderRemoveNode(vp_dockspace);
         ImGui::DockBuilderAddNode(vp_dockspace);
@@ -74,7 +73,6 @@ void Application::BuildUi() {
         }
 
         ImGui::DockBuilderFinish(vp_dockspace);
-        bEntryAddedLastFrame = false;
     }
 
     //ImGui::Begin("Main Window", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar);
@@ -160,7 +158,6 @@ void Application::BuildUi() {
                     ImGui::TableNextColumn();
                     if(ImGui::Button(entry.toString().c_str(), ImVec2(-FLT_MIN, 0.0f)))
                     {
-                        bEntryAddedLastFrame = true;
                         if(openEntries.contains(entry.getDate()))
                         {
                             std::unique_ptr<journy::ui::MarkdownEditor> const& editor = openEntries.at(entry.getDate());
@@ -176,7 +173,7 @@ void Application::BuildUi() {
                         }
                         else
                         {
-                            openEntries[entry.getDate()] = std::make_unique<journy::ui::MarkdownEditor>(&entry);
+                            openEntries[entry.getDate()] = std::make_unique<journy::ui::MarkdownEditor>(&entry, vp_center_d);
                         }
                     }
                 }

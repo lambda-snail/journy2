@@ -9,7 +9,7 @@ namespace journy::ui
     class MarkdownEditor
     {
     public:
-        explicit MarkdownEditor(todo::JournalEntry* e);
+        explicit MarkdownEditor(todo::JournalEntry* e, ImGuiID dock);
 
         void SetOpen(bool isOpen);
         [[nodiscard]] bool IsOpen() const;
@@ -26,5 +26,8 @@ namespace journy::ui
         bool bOutlineMode { false };
         bool bIsOpen { true };
         bool bShouldFocusNextPass { false };
+
+        bool bIsDockingInitialized { false };
+        ImGuiID entryDock;
     };
 }

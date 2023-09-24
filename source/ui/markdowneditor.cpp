@@ -7,110 +7,109 @@
 #include "imgui.h"
 #include "imgui_stdlib.h"
 #include "ui/imguiextensions.h"
+#include "imgui_internal.h"
 
-void journy::ui::MarkdownEditor::BuildUi( std::function<void(todo::JournalEntry const&)> const& saveEntry ) {
+void journy::ui::MarkdownEditor::BuildUi(std::function<void(todo::JournalEntry const &)> const &saveEntry) {
 
-    if(not bIsOpen)
-    {
+    if (not bIsOpen) {
         return;
     }
 
     int flags = ImGuiWindowFlags_None;
-    if(bIsDirty)
-    {
+    if (bIsDirty) {
         flags = flags | ImGuiWindowFlags_UnsavedDocument;
     }
 
-    if(bShouldFocusNextPass)
-    {
+    if (bShouldFocusNextPass) {
         ImGui::SetNextWindowFocus();
         bShouldFocusNextPass = false;
     }
 
-    std::vector<journy::markdown::MarkdownOutlineDescriptor> const* outline = nullptr;
+    std::vector<journy::markdown::MarkdownOutlineDescriptor> const *outline = nullptr;
 
     auto scale = journy::ui::GetDpiScaleFactor();
-    static auto const& clear_color = ImGui::GetStyle().Colors[ImGuiCol_FrameBg];
-    static auto const& frameBackground = static_cast<ImVec4>(themes::PrimaryColor_100);
+    static auto const &clear_color = ImGui::GetStyle().Colors[ImGuiCol_FrameBg];
+    static auto const &frameBackground = static_cast<ImVec4>(themes::PrimaryColor_100);
     static float const command_bar_height = 32.f * scale;
 
-    ImGui::Begin(GetName().c_str(), &bIsOpen, flags);
-        ImGui::BeginChild("Command", {0.f, command_bar_height }, false);
-            ImVec2 buttonSize = { command_bar_height, command_bar_height };
-            // https://github.com/ocornut/imgui/issues/565
-            if(ImGui::Button(ICON_MD_EDIT_NOTE, buttonSize))
-            {
-                bEditMode = true;
-                bOutlineMode = false;
-            }
-            journy::ui::AddTooltipWithDelay("Enter edit mode to make changes to your entry", journy::ui::TooltipDelay::Normal);
-
-            ImGui::SameLine();
-            if(ImGui::Button(ICON_MD_BOOK, buttonSize))
-            {
-                bEditMode = false;
-            }
-            journy::ui::AddTooltipWithDelay("Enter read mode to focus on the content of your entry", journy::ui::TooltipDelay::Normal);
-
-            ImGui::SameLine();
-            if(ImGui::Button(ICON_MD_SAVE, buttonSize))
-            {
-                saveEntry(*entry);
-                bIsDirty = false;
-            }
-            journy::ui::AddTooltipWithDelay("Save the entry content to the database", journy::ui::TooltipDelay::Normal);
-
-            ImGui::SameLine();
-            if(ImGui::Button(ICON_MD_FORMAT_LIST_NUMBERED, buttonSize))
-            {
-                bOutlineMode = not bOutlineMode;
-            }
-            journy::ui::AddTooltipWithDelay("Show an outline of the entire entry", journy::ui::TooltipDelay::Normal);
-        ImGui::EndChild();
-
-        ImGui::Separator();
-
-        if(bEditMode)
-        {
-            float width = ImGui::GetWindowWidth() * .5f;
-
-            ImGui::PushStyleColor(ImGuiCol_FrameBg, frameBackground); // Removes red tint of input text
-            ImGui::BeginChild("Writer", { width, 0.f }, true);
-
-            // If content is dirty, do not reset when no further change
-            bIsDirty |= ImGui::InputTextMultiline("Markdown",
-                                      &entry->getContent(),
-                                      { ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y },
-                                      ImGuiInputTextFlags_AllowTabInput | ImGuiInputTextFlags_CallbackAlways
-                                  );
-
-            ImGui::EndChild();
-            ImGui::PopStyleColor();
-            ImGui::SameLine();
+    if (not bIsDockingInitialized) {
+        ImGuiID window_id = ImHashStr(GetName().c_str());
+        if (ImGuiWindow *window = ImGui::FindWindowByID(window_id)) {
+            ImGui::SetWindowDock(window, entryDock, ImGuiCond_Always);
+            bIsDockingInitialized = true;
         }
+    }
 
-        ImGui::BeginChild("Reader", {}, bEditMode);
+    ImGui::Begin(GetName().c_str(), &bIsOpen, flags);
+    ImGui::BeginChild("Command", {0.f, command_bar_height}, false);
+    ImVec2 buttonSize = {command_bar_height, command_bar_height};
+    // https://github.com/ocornut/imgui/issues/565
+    if (ImGui::Button(ICON_MD_EDIT_NOTE, buttonSize)) {
+        bEditMode = true;
+        bOutlineMode = false;
+    }
+    journy::ui::AddTooltipWithDelay("Enter edit mode to make changes to your entry", journy::ui::TooltipDelay::Normal);
 
-            ImDrawList* draw = ImGui::GetWindowDrawList();
+    ImGui::SameLine();
+    if (ImGui::Button(ICON_MD_BOOK, buttonSize)) {
+        bEditMode = false;
+    }
+    journy::ui::AddTooltipWithDelay("Enter read mode to focus on the content of your entry",
+                                    journy::ui::TooltipDelay::Normal);
 
-            journy::markdown::MarkdownToVector backend(draw, clear_color);
+    ImGui::SameLine();
+    if (ImGui::Button(ICON_MD_SAVE, buttonSize)) {
+        saveEntry(*entry);
+        bIsDirty = false;
+    }
+    journy::ui::AddTooltipWithDelay("Save the entry content to the database", journy::ui::TooltipDelay::Normal);
 
-            marky::Marky marky;
-            marky.process_markdown(&backend, entry->getContent());
+    ImGui::SameLine();
+    if (ImGui::Button(ICON_MD_FORMAT_LIST_NUMBERED, buttonSize)) {
+        bOutlineMode = not bOutlineMode;
+    }
+    journy::ui::AddTooltipWithDelay("Show an outline of the entire entry", journy::ui::TooltipDelay::Normal);
+    ImGui::EndChild();
 
-            outline = backend.GetOutline();
+    ImGui::Separator();
+
+    if (bEditMode) {
+        float width = ImGui::GetWindowWidth() * .5f;
+
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, frameBackground); // Removes red tint of input text
+        ImGui::BeginChild("Writer", {width, 0.f}, true);
+
+        // If content is dirty, do not reset when no further change
+        bIsDirty |= ImGui::InputTextMultiline("Markdown",
+                                              &entry->getContent(),
+                                              {ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y},
+                                              ImGuiInputTextFlags_AllowTabInput | ImGuiInputTextFlags_CallbackAlways
+        );
+
         ImGui::EndChild();
+        ImGui::PopStyleColor();
+        ImGui::SameLine();
+    }
+
+    ImGui::BeginChild("Reader", {}, bEditMode);
+
+    ImDrawList *draw = ImGui::GetWindowDrawList();
+
+    journy::markdown::MarkdownToVector backend(draw, clear_color);
+
+    marky::Marky marky;
+    marky.process_markdown(&backend, entry->getContent());
+
+    outline = backend.GetOutline();
+    ImGui::EndChild();
     ImGui::End();
 
-    if(bOutlineMode)
-    {
+    if (bOutlineMode) {
         ImGui::Begin("Outline", &bOutlineMode);
-        if(ImGui::TreeNode(entry->toString().c_str()))
-        {
+        if (ImGui::TreeNode(entry->toString().c_str())) {
             // This can probably be done more efficiently ...
             static int space_per_indent = 4;
-            for(auto const& header : *outline)
-            {
+            for (auto const &header: *outline) {
                 auto indent = std::string(header.level * space_per_indent, ' ');
                 ImGui::Text("%s %s", indent.c_str(), header.header.c_str());
             }
@@ -120,7 +119,7 @@ void journy::ui::MarkdownEditor::BuildUi( std::function<void(todo::JournalEntry 
     }
 }
 
-journy::ui::MarkdownEditor::MarkdownEditor(todo::JournalEntry *e) : entry { e }{}
+journy::ui::MarkdownEditor::MarkdownEditor(todo::JournalEntry *e, ImGuiID dock) : entry{e}, entryDock{dock} {}
 
 bool journy::ui::MarkdownEditor::IsOpen() const {
     return bIsOpen;
