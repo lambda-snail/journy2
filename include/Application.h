@@ -18,15 +18,10 @@ public:
 private:
     ImGuiIO& io;
 
-    bool show_demo_window = true;
-    bool show_another_window = false;
-
-    bool bIsCreateModalOpen { false };
+    bool show_demo_window { true };
 
     std::vector<todo::JournalEntry> journalEntries;
     std::unique_ptr<todo::DatabaseManager> p_Db;
 
     std::map<std::chrono::year_month_day, std::unique_ptr<journy::ui::MarkdownEditor>> openEntries;
-
-    bool bShouldInitDockEntryList { true };
 };
