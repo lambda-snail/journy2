@@ -507,7 +507,7 @@ int main(int, char**)
     app.Startup();
 
     // Main loop
-    while (!glfwWindowShouldClose(window))
+    while (not glfwWindowShouldClose(window) && not app.ShouldCloseApplication())
     {
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.

@@ -11,12 +11,16 @@ public:
 
     void Startup();
     void BuildUi();
+    void BuildMenu();
     void Render(ImDrawData* main_draw_data);
     void Teardown();
+
+    bool ShouldCloseApplication() const;
 
     ~Application() = default;
 private:
     ImGuiIO& io;
+    bool bShouldClose { false };
 
     bool show_demo_window { true };
 

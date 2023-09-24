@@ -8,6 +8,7 @@
 #include "ui/font/iconsmaterialdesign.h"
 #include "ui/datepicker/datepicker.h"
 #include "ui/imguiextensions.h"
+#include "version.h"
 
 void Application::Startup()
 {
@@ -171,4 +172,61 @@ void Application::BuildUi() {
     // We keep this for now - could come in handy :)
     if (show_demo_window)
         ImGui::ShowDemoWindow(&show_demo_window);
+
+    BuildMenu();
+}
+
+void Application::BuildMenu() {
+
+    // Workaround for modal opened from inside menu items
+    // https://github.com/ocornut/imgui/issues/331#issuecomment-1542969157
+    ImGuiID popup_id = ImHashStr( "About Journy" );
+
+    if(ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if(ImGui::MenuItem("Exit"))
+            {
+                bShouldClose = true;
+            }
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Help"))
+        {
+            if(ImGui::MenuItem("About"))
+            {
+                ImGui::PushOverrideID( popup_id );
+                ImGui::OpenPopup("About Journy");
+                ImGui::PopID();
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+
+        // About modal
+        ImGui::PushOverrideID( popup_id );
+        if(ImGui::BeginPopupModal("About Journy"))
+        {
+            ImGui::Text("Journy created by Niclas Blomberg (lambda-snail)");
+            ImGui::Separator();
+            ImGui::Text("Licensed under MIT license. Source code available at https://github.com/lambda-snail/journy2");
+            ImGui::Text("This build is based on version %s of the project. Feel free to donwload the latest build if you are out of date!", JOURNY_VERSION);
+
+            if(ImGui::Button("Close"))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+        ImGui::PopID();
+    }
+}
+
+bool Application::ShouldCloseApplication() const {
+    return bShouldClose;
 }
