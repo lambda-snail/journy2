@@ -34,7 +34,7 @@ void journy::ui::MarkdownEditor::BuildUi( std::function<void(todo::JournalEntry 
     static auto const& frameBackground = static_cast<ImVec4>(themes::PrimaryColor_100);
     static float const command_bar_height = 32.f * scale;
 
-    ImGui::Begin(entry->toString().c_str(), &bIsOpen, flags);
+    ImGui::Begin(GetName().c_str(), &bIsOpen, flags);
         ImGui::BeginChild("Command", {0.f, command_bar_height }, false);
             ImVec2 buttonSize = { command_bar_height, command_bar_height };
             // https://github.com/ocornut/imgui/issues/565
@@ -132,5 +132,9 @@ void journy::ui::MarkdownEditor::SetOpen(bool isOpen) {
 
 void journy::ui::MarkdownEditor::SetFocusNextPass() {
     bShouldFocusNextPass = true;
+}
+
+std::string journy::ui::MarkdownEditor::GetName() const {
+    return entry->toString();
 }
 

@@ -48,19 +48,33 @@ void Application::BuildUi() {
     // TODO: Split the right window into two, put open entries in the center by default
     // Open outline in the right-most dock
     ImGuiID vp_dockspace = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
-    static bool init = true;
-    ImGuiID vp_left_d, vp_right_d;
-    if (init) {
-        init = false;
+    static bool bShouldInitialize = true;
+    static bool bEntryAddedLastFrame { false };
+
+    ImGuiID vp_left_d, vp_right_d, vp_center_d;
+    if (bShouldInitialize || bEntryAddedLastFrame) {
+        bShouldInitialize = false;
         ImGui::DockBuilderRemoveNode(vp_dockspace);
         ImGui::DockBuilderAddNode(vp_dockspace);
         ImGui::DockBuilderSetNodeSize(vp_dockspace, ImGui::GetMainViewport()->Size);
 
         ImGui::DockBuilderSplitNode(vp_dockspace, ImGuiDir_Left, 0.2f, &vp_left_d, &vp_right_d);
+        ImGui::DockBuilderSplitNode(vp_right_d, ImGuiDir_Right, 0.2f, &vp_right_d, &vp_center_d);
+
         ImGui::DockBuilderDockWindow("Entry List", vp_left_d);
         ImGui::DockBuilderDockWindow("Dear ImGui Demo", vp_right_d);
+        ImGui::DockBuilderDockWindow("Outline", vp_right_d);
+
+        for(auto const& entry : openEntries)
+        {
+            if(entry.second->IsOpen())
+            {
+                ImGui::DockBuilderDockWindow(entry.second->GetName().c_str(), vp_center_d);
+            }
+        }
 
         ImGui::DockBuilderFinish(vp_dockspace);
+        bEntryAddedLastFrame = false;
     }
 
     //ImGui::Begin("Main Window", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar);
@@ -146,6 +160,7 @@ void Application::BuildUi() {
                     ImGui::TableNextColumn();
                     if(ImGui::Button(entry.toString().c_str(), ImVec2(-FLT_MIN, 0.0f)))
                     {
+                        bEntryAddedLastFrame = true;
                         if(openEntries.contains(entry.getDate()))
                         {
                             std::unique_ptr<journy::ui::MarkdownEditor> const& editor = openEntries.at(entry.getDate());

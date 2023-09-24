@@ -15,6 +15,7 @@ namespace journy::ui
         [[nodiscard]] bool IsOpen() const;
 
         void SetFocusNextPass();
+        [[nodiscard]] std::string GetName() const;
 
         void BuildUi( std::function<void(todo::JournalEntry const&)> const& saveEntry );
     private:
