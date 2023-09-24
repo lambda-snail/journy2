@@ -32,9 +32,14 @@ void journy::ui::MarkdownEditor::BuildUi(std::function<void(todo::JournalEntry c
     static auto const &frameBackground = static_cast<ImVec4>(themes::PrimaryColor_100);
     static float const command_bar_height = 32.f * scale;
 
+    // Dock in the center of the viewport when first opening the window.
+    // Note that window is nullptr on the first frame, so the logic will run
+    // on the second frame after opening the entry
     if (not bIsDockingInitialized) {
         ImGuiID window_id = ImHashStr(GetName().c_str());
         if (ImGuiWindow *window = ImGui::FindWindowByID(window_id)) {
+            // Calling an imgui internal function - seems to be the only way of doing
+            // dynamic docking at the moment
             ImGui::SetWindowDock(window, entryDock, ImGuiCond_Always);
             bIsDockingInitialized = true;
         }
