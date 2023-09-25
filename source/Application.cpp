@@ -90,6 +90,7 @@ void Application::BuildUi() {
         ImGui::DockBuilderFinish(vp_dockspace);
     }
 
+    static todo::JournalEntry* selectedItem { nullptr };
     ImGui::Begin("Entry List", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar );
         auto scale = journy::ui::GetDpiScaleFactor();
         float size = 32.f * scale;
@@ -143,7 +144,6 @@ void Application::BuildUi() {
         ImGui::EndChild();
         ImGui::Separator();
 
-        static todo::JournalEntry* selectedItem { nullptr };
         if(ImGui::BeginTable("Entries", 1, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings))
         {
             for (auto& entry : journalEntries)
