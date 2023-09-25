@@ -2,6 +2,7 @@
 
 #include <map>
 #include <imgui.h>
+#include <SimpleIni.h>
 #include "ui/markdowneditor.h"
 #include "journal/databasemanager.h"
 
@@ -19,13 +20,19 @@ public:
 
     ~Application() = default;
 private:
+    CSimpleIniA config;
     ImGuiIO& io;
     bool bShouldClose { false };
 
     bool show_demo_window { true };
 
     std::vector<todo::JournalEntry> journalEntries;
+
+    bool bShouldInitDatabase { false };
+    std::string m_ActiveDatabaseName;
     std::unique_ptr<todo::DatabaseManager> p_Db;
 
     std::map<std::chrono::year_month_day, std::unique_ptr<journy::ui::MarkdownEditor>> openEntries;
+
+    void LoadConfiguration();
 };

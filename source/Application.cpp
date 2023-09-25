@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "Application.h"
+#include "applicationstrings.h"
 
 #include "imgui.h"
 #include "ui/fonthelpers.h"
@@ -10,9 +11,26 @@
 #include "ui/imguiextensions.h"
 #include "version.h"
 
+void Application::LoadConfiguration()
+{
+    config.SetUnicode();
+    config.LoadFile(APPLICATION_CONFIG_FILE);
+
+    bShouldInitDatabase = not config.GetBoolValue(CONFIG_SECTION_DB, CONFIG_DB_INITIALIZED, false);
+    m_ActiveDatabaseName = config.GetValue(CONFIG_SECTION_DB, CONFIG_DB_NAME_KEY, CONFIG_DB_DEFAULT_NAME);
+
+    p_Db = std::make_unique<todo::DatabaseManager>(m_ActiveDatabaseName, bShouldInitDatabase);
+    if(bShouldInitDatabase)
+    {
+        bShouldInitDatabase = false;
+        config.SetBoolValue(CONFIG_SECTION_DB, CONFIG_DB_INITIALIZED, true);
+        config.SetValue(CONFIG_SECTION_DB, CONFIG_DB_NAME_KEY, m_ActiveDatabaseName.c_str());
+    }
+}
+
 void Application::Startup()
 {
-    p_Db = std::make_unique<todo::DatabaseManager>(R"(../resources/todo.db)", false);
+    LoadConfiguration();
 
     std::chrono::year_month_day min{};// { std::chrono::January / 1 / 2023 };
     std::chrono::year_month_day max{};// { std::chrono::December / 31 / 2023 };
@@ -31,7 +49,7 @@ void Application::Startup()
 }
 
 void Application::Teardown() {
-
+    config.SaveFile(APPLICATION_CONFIG_FILE);
 }
 
 void Application::Render(ImDrawData* main_draw_data) {
