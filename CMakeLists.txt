@@ -4,7 +4,7 @@ include(FetchContent)
 
 set(PROJECT_VERSION_FILE ${CMAKE_SOURCE_DIR}/include/version.h)
 
-project(journy2 LANGUAGES CXX VERSION 0.1.0)
+project(journy2 LANGUAGES CXX VERSION 0.3.5)
 file(WRITE ${PROJECT_VERSION_FILE} "#pragma once\n#ifndef JOURNY_VERSION\n#define JOURNY_VERSION \"${CMAKE_PROJECT_VERSION}\"\n#endif")
 
 set(CMAKE_CXX_STANDARD 20)
@@ -14,6 +14,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(unofficial-sqlite3 REQUIRED)
 find_package(antlr4-runtime CONFIG REQUIRED)
+find_path(SIMPLEINI_INCLUDE_DIRS "ConvertUTF.c")
 
 add_executable(journy2
     source/main.cpp
@@ -31,6 +32,9 @@ add_executable(journy2
     source/ui/themes.cpp include/ui/themes.h
     include/ui/font/iconsmaterialdesign.h
 
+    include/applicationstrings.h
+    include/ui/imguiextensions.h source/ui/imguiextensions.cpp
+
     # Markdown parser
     include/markdown/parser/MarkdownBaseListener.h
     include/markdown/parser/MarkdownBaseVisitor.h
@@ -45,11 +49,9 @@ add_executable(journy2
     source/markdown/generated/MarkdownListener.cpp
     source/markdown/generated/MarkdownParser.cpp
     source/markdown/generated/MarkdownVisitor.cpp
+
     include/markdown/backend/html_backend.h source/markdown/backend/html_backend.cpp
     include/markdown/Marky.h source/markdown/Marky.cpp
-        include/applicationstrings.h
-        include/ui/imguiextensions.h
-        source/ui/imguiextensions.cpp
 )
 
 target_include_directories(journy2
@@ -57,6 +59,7 @@ target_include_directories(journy2
         ${CMAKE_SOURCE_DIR}/include
 
         ${ANTLR4_INCLUDE_DIR}
+        ${SIMPLEINI_INCLUDE_DIRS}
 )
 
 target_link_libraries(journy2
