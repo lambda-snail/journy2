@@ -30,16 +30,15 @@ void Application::LoadConfiguration()
 
 void Application::Startup()
 {
+    using namespace std::chrono;
+
     LoadConfiguration();
 
-    std::chrono::year_month_day min{};// { std::chrono::January / 1 / 2023 };
-    std::chrono::year_month_day max{};// { std::chrono::December / 31 / 2023 };
+    auto now = std::chrono::time_point<std::chrono::system_clock>::clock::now();
+    auto today = year_month_day { floor<days>(now) };
 
-    std::stringstream minstream("2023-01-01");
-    std::stringstream maxstream("2023-12-31");
-
-    std::chrono::from_stream(minstream, "%F", min);
-    std::chrono::from_stream(maxstream, "%F", max);
+    auto min = year_month_day { today.year() / January / 1 };
+    auto max = year_month_day { today.year() / December / 31 };
 
     journalEntries = p_Db->GetAllJournalEntriesBetween(min, max);
     for(auto const& e : journalEntries)
