@@ -143,13 +143,16 @@ void Application::BuildUi() {
         ImGui::EndChild();
         ImGui::Separator();
 
+        static todo::JournalEntry* selectedItem { nullptr };
         if(ImGui::BeginTable("Entries", 1, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings))
         {
             for (auto& entry : journalEntries)
             {
                 ImGui::TableNextColumn();
-                if(ImGui::Button(entry.toString().c_str(), ImVec2(-FLT_MIN, 0.0f)))
+                bool isSelected = (selectedItem == &entry);
+                if(ImGui::Selectable(entry.toString().c_str(), isSelected))
                 {
+                    selectedItem = &entry;
                     if(openEntries.contains(entry.getDate()))
                     {
                         std::unique_ptr<journy::ui::MarkdownEditor> const& editor = openEntries.at(entry.getDate());
@@ -160,7 +163,6 @@ void Application::BuildUi() {
                         else
                         {
                             // Focus or bring to foreground
-
                         }
                     }
                     else
@@ -168,13 +170,18 @@ void Application::BuildUi() {
                         openEntries[entry.getDate()] = std::make_unique<journy::ui::MarkdownEditor>(&entry, vp_center_d);
                     }
                 }
+
+                if(isSelected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
             }
 
             ImGui::EndTable();
         }
     ImGui::End(); // Entry list
 
-    auto saveEntry = [this](todo::JournalEntry const& entry) {
+    std::function<void(todo::JournalEntry const&)> const saveEntry = [this](todo::JournalEntry const& entry) {
         this->p_Db->UpdateJournalEntryContent(entry);
     };
 
