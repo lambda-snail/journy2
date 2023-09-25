@@ -13,7 +13,6 @@ public:
     void Startup();
     void BuildUi();
     void BuildMenu();
-    void Render(ImDrawData* main_draw_data);
     void Teardown();
 
     bool ShouldCloseApplication() const;

@@ -51,9 +51,6 @@ void Application::Teardown() {
     config.SaveFile(APPLICATION_CONFIG_FILE);
 }
 
-void Application::Render(ImDrawData* main_draw_data) {
-}
-
 void Application::BuildUi() {
 
 #ifdef IMGUI_HAS_VIEWPORT

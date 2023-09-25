@@ -541,7 +541,6 @@ int main(int, char**)
         ImGui::Render();
 
         ImDrawData* main_draw_data = ImGui::GetDrawData();
-        app.Render(main_draw_data);
 
         const bool main_is_minimized = (main_draw_data->DisplaySize.x <= 0.0f || main_draw_data->DisplaySize.y <= 0.0f);
         if (!main_is_minimized)
