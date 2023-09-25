@@ -47,47 +47,39 @@ void Application::Startup()
     }
 }
 
-void Application::Teardown() {
+void Application::Teardown()
+{
     m_Config.SaveFile(APPLICATION_CONFIG_FILE);
 }
 
-void Application::BuildUi() {
-
-#ifdef IMGUI_HAS_VIEWPORT
-    auto const* vp = ImGui::GetMainViewport();
-#else
-    ImGui::SetNextWindowPos({0.f, 0.f});
-    ImGui::SetNextWindowSize(m_Io.DisplaySize);
-#endif
-
-    // TODO: Split the right window into two, put open entries in the center by default
-    // Open outline in the right-most dock
-    ImGuiID vp_dockspace = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+void Application::BuildUi()
+{
+    ImGuiID vpDockSpace = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     static bool bShouldInitialize = true;
 
-    static ImGuiID vp_left_d, vp_right_d, vp_center_d;
+    static ImGuiID vpLeftDock, vpRightDock, vpCenterDock;
     if (bShouldInitialize){
         bShouldInitialize = false;
-        ImGui::DockBuilderRemoveNode(vp_dockspace);
-        ImGui::DockBuilderAddNode(vp_dockspace);
-        ImGui::DockBuilderSetNodeSize(vp_dockspace, ImGui::GetMainViewport()->Size);
+        ImGui::DockBuilderRemoveNode(vpDockSpace);
+        ImGui::DockBuilderAddNode(vpDockSpace);
+        ImGui::DockBuilderSetNodeSize(vpDockSpace, ImGui::GetMainViewport()->Size);
 
-        ImGui::DockBuilderSplitNode(vp_dockspace, ImGuiDir_Left, 0.2f, &vp_left_d, &vp_right_d);
-        ImGui::DockBuilderSplitNode(vp_right_d, ImGuiDir_Right, 0.2f, &vp_right_d, &vp_center_d);
+        ImGui::DockBuilderSplitNode(vpDockSpace, ImGuiDir_Left, 0.2f, &vpLeftDock, &vpRightDock);
+        ImGui::DockBuilderSplitNode(vpRightDock, ImGuiDir_Right, 0.2f, &vpRightDock, &vpCenterDock);
 
-        ImGui::DockBuilderDockWindow("Entry List", vp_left_d);
-        ImGui::DockBuilderDockWindow("Dear ImGui Demo", vp_right_d);
-        ImGui::DockBuilderDockWindow("Outline", vp_right_d);
+        ImGui::DockBuilderDockWindow("Entry List", vpLeftDock);
+        ImGui::DockBuilderDockWindow("Dear ImGui Demo", vpRightDock);
+        ImGui::DockBuilderDockWindow("Outline", vpRightDock);
 
         for(auto const& entry : m_OpenEntries)
         {
             if(entry.second->IsOpen())
             {
-                ImGui::DockBuilderDockWindow(entry.second->GetName().c_str(), vp_center_d);
+                ImGui::DockBuilderDockWindow(entry.second->GetName().c_str(), vpCenterDock);
             }
         }
 
-        ImGui::DockBuilderFinish(vp_dockspace);
+        ImGui::DockBuilderFinish(vpDockSpace);
     }
 
     static todo::JournalEntry* selectedItem { nullptr };
@@ -167,7 +159,7 @@ void Application::BuildUi() {
                     }
                     else
                     {
-                        m_OpenEntries[entry.getDate()] = std::make_unique<journy::ui::MarkdownEditor>(&entry, vp_center_d);
+                        m_OpenEntries[entry.getDate()] = std::make_unique<journy::ui::MarkdownEditor>(&entry, vpCenterDock);
                     }
                 }
 
@@ -181,13 +173,13 @@ void Application::BuildUi() {
         }
     ImGui::End(); // Entry list
 
-    std::function<void(todo::JournalEntry const&)> const saveEntry = [this](todo::JournalEntry const& entry) {
+    std::function<void(todo::JournalEntry const&)> const saveEntryFunction = [this](todo::JournalEntry const& entry) {
         this->m_Db->UpdateJournalEntryContent(entry);
     };
 
     for(auto const& [date, editor] : m_OpenEntries)
     {
-        editor->BuildUi(saveEntry);
+        editor->BuildUi(saveEntryFunction);
     }
 
     // We keep this for now - could come in handy :)
@@ -197,11 +189,11 @@ void Application::BuildUi() {
     BuildMenu();
 }
 
-void Application::BuildMenu() {
-
+void Application::BuildMenu()
+{
     // Workaround for modal opened from inside menu items
     // https://github.com/ocornut/imgui/issues/331#issuecomment-1542969157
-    ImGuiID popup_id = ImHashStr( "About Journy" );
+    ImGuiID aboutPopupId = ImHashStr("About Journy" );
 
     if(ImGui::BeginMainMenuBar())
     {
@@ -218,7 +210,7 @@ void Application::BuildMenu() {
         {
             if(ImGui::MenuItem("About"))
             {
-                ImGui::PushOverrideID( popup_id );
+                ImGui::PushOverrideID(aboutPopupId );
                 ImGui::OpenPopup("About Journy");
                 ImGui::PopID();
             }
@@ -229,7 +221,7 @@ void Application::BuildMenu() {
         ImGui::EndMainMenuBar();
 
         // About modal
-        ImGui::PushOverrideID( popup_id );
+        ImGui::PushOverrideID(aboutPopupId );
         if(ImGui::BeginPopupModal("About Journy"))
         {
             ImGui::Text("Journy created by Niclas Blomberg (lambda-snail)");
@@ -248,6 +240,7 @@ void Application::BuildMenu() {
     }
 }
 
-bool Application::ShouldCloseApplication() const {
+bool Application::ShouldCloseApplication() const
+{
     return bShouldClose;
 }
