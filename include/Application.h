@@ -8,30 +8,30 @@
 
 class Application {
 public:
-    explicit Application(ImGuiIO& imguiio) : io(imguiio), p_Db{nullptr} {};
+    explicit Application(ImGuiIO& io) : m_Io(io), m_Db{nullptr} {};
 
     void Startup();
     void BuildUi();
     void BuildMenu();
     void Teardown();
 
-    bool ShouldCloseApplication() const;
+    [[nodiscard]] bool ShouldCloseApplication() const;
 
     ~Application() = default;
 private:
-    CSimpleIniA config;
-    ImGuiIO& io;
+    CSimpleIniA m_Config;
+    ImGuiIO& m_Io;
     bool bShouldClose { false };
 
-    bool show_demo_window { true };
+    bool bShowDemoWindow {true };
 
-    std::vector<todo::JournalEntry> journalEntries;
+    std::vector<todo::JournalEntry> m_JournalEntries;
 
     bool bShouldInitDatabase { false };
     std::string m_ActiveDatabaseName;
-    std::unique_ptr<todo::DatabaseManager> p_Db;
+    std::unique_ptr<todo::DatabaseManager> m_Db;
 
-    std::map<std::chrono::year_month_day, std::unique_ptr<journy::ui::MarkdownEditor>> openEntries;
+    std::map<std::chrono::year_month_day, std::unique_ptr<journy::ui::MarkdownEditor>> m_OpenEntries;
 
     void LoadConfiguration();
 };

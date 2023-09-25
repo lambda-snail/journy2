@@ -13,7 +13,7 @@
 #include <vulkan/vulkan.h>
 //#include <vulkan/vulkan_beta.h>
 
-#define IMGUI_USER_CONFIG "include/config.h"
+#define IMGUI_USER_CONFIG "include/m_Config.h"
 
 #include "applicationstrings.h"
 #include "Application.h"
@@ -418,8 +418,8 @@ int main(int, char**)
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
-    //io.ConfigViewportsNoAutoMerge = true;
-    //io.ConfigViewportsNoTaskBarIcon = true;
+    //m_Io.ConfigViewportsNoAutoMerge = true;
+    //m_Io.ConfigViewportsNoTaskBarIcon = true;
 
     // Setup Dear ImGui style
     //ImGui::StyleColorsDark();
@@ -460,12 +460,12 @@ int main(int, char**)
     // - Use '#define IMGUI_ENABLE_FREETYPE' in your imconfig file to use Freetype for higher quality font rendering.
     // - Read 'docs/FONTS.md' for more instructions and details.
     // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
+    //m_Io.Fonts->AddFontDefault();
+    //m_Io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
+    //m_Io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
+    //m_Io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
+    //m_Io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
+    //ImFont* font = m_Io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, m_Io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != nullptr);
 
     float dpi_scale = journy::ui::GetDpiScaleFactor();
@@ -510,9 +510,9 @@ int main(int, char**)
     while (not glfwWindowShouldClose(window) && not app.ShouldCloseApplication())
     {
         // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application, or clear/overwrite your copy of the keyboard data.
+        // You can read the m_Io.WantCaptureMouse, m_Io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+        // - When m_Io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
+        // - When m_Io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application, or clear/overwrite your copy of the keyboard data.
         // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
 

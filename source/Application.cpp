@@ -13,18 +13,18 @@
 
 void Application::LoadConfiguration()
 {
-    config.SetUnicode();
-    config.LoadFile(APPLICATION_CONFIG_FILE);
+    m_Config.SetUnicode();
+    m_Config.LoadFile(APPLICATION_CONFIG_FILE);
 
-    bShouldInitDatabase = not config.GetBoolValue(CONFIG_SECTION_DB, CONFIG_DB_INITIALIZED, false);
-    m_ActiveDatabaseName = config.GetValue(CONFIG_SECTION_DB, CONFIG_DB_NAME_KEY, CONFIG_DB_DEFAULT_NAME);
+    bShouldInitDatabase = not m_Config.GetBoolValue(CONFIG_SECTION_DB, CONFIG_DB_INITIALIZED, false);
+    m_ActiveDatabaseName = m_Config.GetValue(CONFIG_SECTION_DB, CONFIG_DB_NAME_KEY, CONFIG_DB_DEFAULT_NAME);
 
-    p_Db = std::make_unique<todo::DatabaseManager>(m_ActiveDatabaseName, bShouldInitDatabase);
+    m_Db = std::make_unique<todo::DatabaseManager>(m_ActiveDatabaseName, bShouldInitDatabase);
     if(bShouldInitDatabase)
     {
         bShouldInitDatabase = false;
-        config.SetBoolValue(CONFIG_SECTION_DB, CONFIG_DB_INITIALIZED, true);
-        config.SetValue(CONFIG_SECTION_DB, CONFIG_DB_NAME_KEY, m_ActiveDatabaseName.c_str());
+        m_Config.SetBoolValue(CONFIG_SECTION_DB, CONFIG_DB_INITIALIZED, true);
+        m_Config.SetValue(CONFIG_SECTION_DB, CONFIG_DB_NAME_KEY, m_ActiveDatabaseName.c_str());
     }
 }
 
@@ -40,15 +40,15 @@ void Application::Startup()
     auto min = year_month_day { today.year() / January / 1 };
     auto max = year_month_day { today.year() / December / 31 };
 
-    journalEntries = p_Db->GetAllJournalEntriesBetween(min, max);
-    for(auto const& e : journalEntries)
+    m_JournalEntries = m_Db->GetAllJournalEntriesBetween(min, max);
+    for(auto const& e : m_JournalEntries)
     {
         std::cout << e.toString() << std::endl;
     }
 }
 
 void Application::Teardown() {
-    config.SaveFile(APPLICATION_CONFIG_FILE);
+    m_Config.SaveFile(APPLICATION_CONFIG_FILE);
 }
 
 void Application::BuildUi() {
@@ -57,7 +57,7 @@ void Application::BuildUi() {
     auto const* vp = ImGui::GetMainViewport();
 #else
     ImGui::SetNextWindowPos({0.f, 0.f});
-    ImGui::SetNextWindowSize(io.DisplaySize);
+    ImGui::SetNextWindowSize(m_Io.DisplaySize);
 #endif
 
     // TODO: Split the right window into two, put open entries in the center by default
@@ -79,7 +79,7 @@ void Application::BuildUi() {
         ImGui::DockBuilderDockWindow("Dear ImGui Demo", vp_right_d);
         ImGui::DockBuilderDockWindow("Outline", vp_right_d);
 
-        for(auto const& entry : openEntries)
+        for(auto const& entry : m_OpenEntries)
         {
             if(entry.second->IsOpen())
             {
@@ -129,8 +129,8 @@ void Application::BuildUi() {
                 {
                     std::chrono::year_month_day date( std::chrono::day{static_cast<unsigned int>(day)} / (month+1) / year);
                     todo::JournalEntry entry{ date, {} };
-                    p_Db->AddNewJournalEntry(entry);
-                    journalEntries.push_back(entry);
+                    m_Db->AddNewJournalEntry(entry);
+                    m_JournalEntries.push_back(entry);
                 }
 
                 if(create || cancel)
@@ -146,16 +146,16 @@ void Application::BuildUi() {
 
         if(ImGui::BeginTable("Entries", 1, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings))
         {
-            for (auto& entry : journalEntries)
+            for (auto& entry : m_JournalEntries)
             {
                 ImGui::TableNextColumn();
                 bool isSelected = (selectedItem == &entry);
                 if(ImGui::Selectable(entry.toString().c_str(), isSelected))
                 {
                     selectedItem = &entry;
-                    if(openEntries.contains(entry.getDate()))
+                    if(m_OpenEntries.contains(entry.getDate()))
                     {
-                        std::unique_ptr<journy::ui::MarkdownEditor> const& editor = openEntries.at(entry.getDate());
+                        std::unique_ptr<journy::ui::MarkdownEditor> const& editor = m_OpenEntries.at(entry.getDate());
                         if(not editor->IsOpen())
                         {
                             editor->SetOpen(true);
@@ -167,7 +167,7 @@ void Application::BuildUi() {
                     }
                     else
                     {
-                        openEntries[entry.getDate()] = std::make_unique<journy::ui::MarkdownEditor>(&entry, vp_center_d);
+                        m_OpenEntries[entry.getDate()] = std::make_unique<journy::ui::MarkdownEditor>(&entry, vp_center_d);
                     }
                 }
 
@@ -182,17 +182,17 @@ void Application::BuildUi() {
     ImGui::End(); // Entry list
 
     std::function<void(todo::JournalEntry const&)> const saveEntry = [this](todo::JournalEntry const& entry) {
-        this->p_Db->UpdateJournalEntryContent(entry);
+        this->m_Db->UpdateJournalEntryContent(entry);
     };
 
-    for(auto const& [date, editor] : openEntries)
+    for(auto const& [date, editor] : m_OpenEntries)
     {
         editor->BuildUi(saveEntry);
     }
 
     // We keep this for now - could come in handy :)
-    if (show_demo_window)
-        ImGui::ShowDemoWindow(&show_demo_window);
+    if (bShowDemoWindow)
+        ImGui::ShowDemoWindow(&bShowDemoWindow);
 
     BuildMenu();
 }

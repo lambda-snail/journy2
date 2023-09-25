@@ -120,7 +120,7 @@ todo::DatabaseManager::GetAllJournalEntriesBetween(std::chrono::year_month_day m
     }
     else
     {
-        //wxLogError(sqlite3_errmsg(p_Db));
+        //wxLogError(sqlite3_errmsg(m_Db));
         std::cout << sqlite3_errmsg(p_Db) << std::endl;
         return {};
     }
@@ -135,7 +135,7 @@ void todo::DatabaseManager::UpdateJournalEntryContent(JournalEntry const& entry)
     int status = sqlite3_step( sql );
     if(status != SQLITE_DONE)
     {
-        //wxLogError(sqlite3_errmsg(p_Db));
+        //wxLogError(sqlite3_errmsg(m_Db));
     }
 
     sqlite3_clear_bindings( sql );
@@ -150,7 +150,7 @@ bool todo::DatabaseManager::DeleteJournalEntry(JournalEntry const& entry) const
     int status = sqlite3_step( sql );
     if(status != SQLITE_DONE)
     {
-        //wxLogError(sqlite3_errmsg(p_Db));
+        //wxLogError(sqlite3_errmsg(m_Db));
         return false;
     }
 
