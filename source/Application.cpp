@@ -101,7 +101,12 @@ void Application::BuildUi()
             {
                 ImGui::Text("Choose a date for the entry");
 
-                static int day {0};
+                static std::chrono::year_month_day today
+                {
+                    std::chrono::floor<std::chrono::days>(std::chrono::time_point<std::chrono::system_clock>::clock::now())
+                };
+
+                static int day { static_cast<int>( (unsigned int)today.day() ) };
                 ImGui::InputInt("Day", &day);
                 if(day < 1) day = 1;
                 if(day > 32) day = 32;
