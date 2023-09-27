@@ -6,6 +6,8 @@ static const char* names_mo[] = {"January","February","March","April","May","Jun
 static const char* abrvs_mo[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 static const char* abrvs_wd[] = {"Mo","Tu","We","Th","Fr","Sa", "Su"};
 
+static const int DaysPerWeek { 7 };
+
 /**
  * Index into the abbreviations array from a c-based index (Sunday is index 0).
  */
@@ -43,8 +45,10 @@ bool DatePicker(const char *id, int& level, std::chrono::year_month_day& date)
 
     ImGui::Separator();
 
-    auto lastDay = static_cast<unsigned int>((year_month_day {date.year() / date.month() / last }).day());
-    weekday weekdayOfFirstday = sys_days{ year_month_day { date.year() / date.month() / 1 } };
+    auto lastDayOfMonth = year_month_day {date.year() / date.month() / last };
+    auto lastDay_int = static_cast<unsigned int>(lastDayOfMonth.day());
+    weekday weekdayOfFirstDay = sys_days{year_month_day { date.year() / date.month() / 1 } };
+    weekday weekdayOfLastDay = sys_days{ lastDayOfMonth };
 
     if(ImGui::BeginTable("Days", 7))
     {
@@ -56,7 +60,7 @@ bool DatePicker(const char *id, int& level, std::chrono::year_month_day& date)
         ImGui::TableHeadersRow();
 
         // Fill in days that come before the first day of active month
-        for(int i { 0 }; i < weekdayOfFirstday.iso_encoding()-1; ++i)
+        for(int i { 0 }; i < weekdayOfFirstDay.iso_encoding() - 1; ++i)
         {
             if(ImGui::TableNextColumn())
             {
@@ -64,13 +68,22 @@ bool DatePicker(const char *id, int& level, std::chrono::year_month_day& date)
             }
         }
 
-        //ImGui::TableSetColumnIndex(static_cast<int>(weekdayOfFirstday.iso_encoding()));
+        //ImGui::TableSetColumnIndex(static_cast<int>(weekdayOfFirstDay.iso_encoding()));
 
-        for(int i {1}; i <= lastDay; ++i)
+        for(int i {1}; i <= lastDay_int; ++i)
         {
             if(ImGui::TableNextColumn())
             {
                 ImGui::Text("%i", i);
+            }
+        }
+
+        // Fill the remaining days of the calendar after the last day - if any
+        for(auto i { DaysPerWeek }; i > static_cast<unsigned int>(weekdayOfLastDay.iso_encoding()); --i)
+        {
+            if(ImGui::TableNextColumn())
+            {
+                ImGui::Text("%s", "x");
             }
         }
 
