@@ -54,6 +54,8 @@ void Application::Teardown()
 
 void Application::BuildUi()
 {
+    using namespace ImGuiExtensions;
+
     if(ImGui::BeginPopupModal("Calendar"))
     {
         DatePickerLevel l { DatePickerLevel::Days };
@@ -64,7 +66,7 @@ void Application::BuildUi()
         ImGui::EndPopup();
     }
 
-    ImGui::OpenPopup("test");
+    ImGui::OpenPopup("Calendar");
 
     ImGuiID vpDockSpace = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     static bool bShouldInitialize = true;

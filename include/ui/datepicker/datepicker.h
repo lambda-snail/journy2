@@ -4,11 +4,14 @@
 #include "imgui.h"
 #include <chrono>
 
-enum class DatePickerLevel
+namespace ImGuiExtensions
 {
-    Days,
-    Months,
-    Years
-};
+    enum class DatePickerLevel
+    {
+        Days,
+        Months,
+        Years
+    };
 
-bool DatePicker(const char* id, DatePickerLevel& level, std::chrono::year_month_day& t) noexcept;
+    bool DatePicker(const char* id, DatePickerLevel& level, std::chrono::year_month_day& t) noexcept;
+}
