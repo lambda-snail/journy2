@@ -4,12 +4,13 @@
 
 namespace ImGuiExtensions {
 
-    static const char *MonthNames[] = {"January", "February", "March", "April", "May", "June", "July", "August",
+    static char const* MonthNames[] = {"January", "February", "March", "April", "May", "June", "July", "August",
                                        "September", "October", "November", "December"};
-    static const char *DayNames[] = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
+    static char const* DayNames[] = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
 
-    void SelectDay(std::chrono::year_month_day const &lastDayOfMonth, std::chrono::weekday const &weekdayOfFirstDay,
-                   std::chrono::weekday const &weekdayOfLastDay) noexcept;
+    void SelectDay(std::chrono::year_month_day& date, std::chrono::year_month_day const &lastDayOfMonth,
+                   std::chrono::weekday const &weekdayOfFirstDay, std::chrono::weekday const &weekdayOfLastDay) noexcept;
+    void SelectMonth(std::chrono::year_month_day& date);
 
     static const int DaysPerWeek{7};
 
@@ -48,7 +49,19 @@ namespace ImGuiExtensions {
         weekday weekdayOfFirstDay = sys_days{year_month_day{date.year() / date.month() / 1}};
         weekday weekdayOfLastDay = sys_days{lastDayOfMonth};
 
-        SelectDay(lastDayOfMonth, weekdayOfFirstDay, weekdayOfLastDay);
+        switch(level)
+        {
+            case DatePickerLevel::Days:
+                SelectDay(date, lastDayOfMonth, weekdayOfFirstDay, weekdayOfLastDay);
+                break;
+            case DatePickerLevel::Months:
+                SelectMonth(date);
+                break;
+            default:
+
+                break;
+        }
+
 
         ImGui::EndGroup();
         ImGui::PopID();
@@ -56,8 +69,9 @@ namespace ImGuiExtensions {
         return false;
     }
 
-    void SelectDay(std::chrono::year_month_day const &lastDayOfMonth, std::chrono::weekday const &weekdayOfFirstDay,
-                   std::chrono::weekday const &weekdayOfLastDay) noexcept {
+    void SelectDay(std::chrono::year_month_day &date, std::chrono::year_month_day const &lastDayOfMonth,
+                   std::chrono::weekday const &weekdayOfFirstDay, std::chrono::weekday const &weekdayOfLastDay) noexcept
+    {
         if (ImGui::BeginTable("Days", 7)) {
             for (auto const *day: DayNames) {
                 ImGui::TableSetupColumn(day);
@@ -66,26 +80,37 @@ namespace ImGuiExtensions {
             ImGui::TableHeadersRow();
 
             // Fill in days that come before the first day of active month
-            for (int i{0}; i < weekdayOfFirstDay.iso_encoding() - 1; ++i) {
+            for (int i{0}; i < weekdayOfFirstDay.iso_encoding() - 1; ++i)
+            {
                 if (ImGui::TableNextColumn()) {
                     ImGui::Text("%s", "x");
                 }
             }
 
-            for (int i{1}; i <= static_cast<unsigned int>(lastDayOfMonth.day()); ++i) {
+            for (int i{1}; i <= static_cast<unsigned int>(lastDayOfMonth.day()); ++i)
+            {
                 if (ImGui::TableNextColumn()) {
                     ImGui::Text("%i", i);
                 }
             }
 
             // Fill the remaining days of the calendar after the last day - if any
-            for (auto i{DaysPerWeek}; i > static_cast<unsigned int>(weekdayOfLastDay.iso_encoding()); --i) {
+            for (auto i{DaysPerWeek}; i > static_cast<unsigned int>(weekdayOfLastDay.iso_encoding()); --i)
+            {
                 if (ImGui::TableNextColumn()) {
                     ImGui::Text("%s", "x");
                 }
             }
 
             ImGui::EndTable();
+        }
+    }
+
+    void SelectMonth(std::chrono::year_month_day &date)
+    {
+        if (ImGui::BeginTable("Days", 3))
+        {
+
         }
     }
 }
