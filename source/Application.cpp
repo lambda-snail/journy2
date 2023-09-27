@@ -59,7 +59,7 @@ void Application::BuildUi()
         int l {0};
 
         auto const now { floor<std::chrono::days>(std::chrono::system_clock::now()) };
-        std::chrono::year_month_day date {now };
+        static std::chrono::year_month_day date {now };
         DatePicker("Calendar", l, date);
         ImGui::EndPopup();
     }
