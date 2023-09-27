@@ -2,9 +2,8 @@
 
 #include "ui/datepicker/datepicker.h"
 
-static const char* names_mo[] = {"January","February","March","April","May","June","July","August","September","October","November","December"};
-static const char* abrvs_mo[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-static const char* abrvs_wd[] = {"Mo","Tu","We","Th","Fr","Sa", "Su"};
+static const char* MonthNames[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+static const char* DayNames[] = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
 
 static const int DaysPerWeek { 7 };
 
@@ -13,7 +12,7 @@ static const int DaysPerWeek { 7 };
  */
 inline const char* getWeekdayAbbreviation(std::chrono::weekday const& wd)
 {
-    return abrvs_wd[wd.iso_encoding()-1];
+    return DayNames[wd.iso_encoding() - 1];
 }
 
 const int min_yr = 1970;
@@ -41,7 +40,7 @@ bool DatePicker(const char *id, int& level, std::chrono::year_month_day& date)
     }
 
     ImGui::SameLine();
-    ImGui::Text("%s", names_mo[static_cast<unsigned int>(date.month()) - 1]); // chrono::month index starts at 1
+    ImGui::Text("%s", MonthNames[static_cast<unsigned int>(date.month()) - 1]); // chrono::month index starts at 1
 
     ImGui::Separator();
 
@@ -52,7 +51,7 @@ bool DatePicker(const char *id, int& level, std::chrono::year_month_day& date)
 
     if(ImGui::BeginTable("Days", 7))
     {
-        for(auto const* day : abrvs_wd)
+        for(auto const* day : DayNames)
         {
             ImGui::TableSetupColumn( day );
         }
