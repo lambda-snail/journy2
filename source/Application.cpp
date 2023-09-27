@@ -54,13 +54,13 @@ void Application::Teardown()
 
 void Application::BuildUi()
 {
-    if(ImGui::BeginPopupModal("test"))
+    if(ImGui::BeginPopupModal("Calendar"))
     {
-        int l {0};
+        DatePickerLevel l { DatePickerLevel::Days };
 
         auto const now { floor<std::chrono::days>(std::chrono::system_clock::now()) };
         static std::chrono::year_month_day date {now };
-        DatePicker("Calendar", l, date);
+        DatePicker("DatePicker", l, date);
         ImGui::EndPopup();
     }
 

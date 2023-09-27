@@ -5,6 +5,9 @@
 static const char* MonthNames[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 static const char* DayNames[] = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
 
+void SelectDay(std::chrono::year_month_day const& lastDayOfMonth, std::chrono::weekday const& weekdayOfFirstDay,
+               std::chrono::weekday const& weekdayOfLastDay) noexcept;
+
 static const int DaysPerWeek { 7 };
 
 /**
@@ -15,10 +18,7 @@ inline const char* getWeekdayAbbreviation(std::chrono::weekday const& wd)
     return DayNames[wd.iso_encoding() - 1];
 }
 
-const int min_yr = 1970;
-const int max_yr = 2100;
-
-bool DatePicker(const char *id, int& level, std::chrono::year_month_day& date)
+bool DatePicker(const char *id, DatePickerLevel& level, std::chrono::year_month_day& date) noexcept
 {
     using namespace std::chrono;
 
@@ -34,21 +34,30 @@ bool DatePicker(const char *id, int& level, std::chrono::year_month_day& date)
     }
 
     ImGui::SameLine();
+    ImGui::Text("%s", MonthNames[static_cast<unsigned int>(date.month()) - 1]); // chrono::month index starts at 1
+
+    ImGui::SameLine();
     if(ImGui::ArrowButton("Down", ImGuiDir_Down))
     {
         date += months{ 1 };
     }
 
-    ImGui::SameLine();
-    ImGui::Text("%s", MonthNames[static_cast<unsigned int>(date.month()) - 1]); // chrono::month index starts at 1
-
     ImGui::Separator();
 
     auto lastDayOfMonth = year_month_day {date.year() / date.month() / last };
-    auto lastDay_int = static_cast<unsigned int>(lastDayOfMonth.day());
     weekday weekdayOfFirstDay = sys_days{year_month_day { date.year() / date.month() / 1 } };
     weekday weekdayOfLastDay = sys_days{ lastDayOfMonth };
 
+    SelectDay(lastDayOfMonth, weekdayOfFirstDay, weekdayOfLastDay);
+
+    ImGui::EndGroup();
+    ImGui::PopID();
+
+    return false;
+}
+
+void SelectDay(std::chrono::year_month_day const& lastDayOfMonth, std::chrono::weekday const& weekdayOfFirstDay,
+               std::chrono::weekday const& weekdayOfLastDay) noexcept {
     if(ImGui::BeginTable("Days", 7))
     {
         for(auto const* day : DayNames)
@@ -67,9 +76,7 @@ bool DatePicker(const char *id, int& level, std::chrono::year_month_day& date)
             }
         }
 
-        //ImGui::TableSetColumnIndex(static_cast<int>(weekdayOfFirstDay.iso_encoding()));
-
-        for(int i {1}; i <= lastDay_int; ++i)
+        for(int i {1}; i <= static_cast<unsigned int>(lastDayOfMonth.day()); ++i)
         {
             if(ImGui::TableNextColumn())
             {
@@ -88,9 +95,4 @@ bool DatePicker(const char *id, int& level, std::chrono::year_month_day& date)
 
         ImGui::EndTable();
     }
-
-    ImGui::EndGroup();
-    ImGui::PopID();
-
-    return false;
 }
