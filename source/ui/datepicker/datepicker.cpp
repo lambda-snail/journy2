@@ -1,3 +1,5 @@
+#include <string>
+
 #include "ui/datepicker/datepicker.h"
 
 static const char* names_mo[] = {"January","February","March","April","May","June","July","August","September","October","November","December"};
@@ -48,11 +50,10 @@ bool DatePicker(const char *id, int& level, std::chrono::year_month_day& date)
     {
         for(auto const* day : abrvs_wd)
         {
-            if(ImGui::TableNextColumn())
-            {
-                ImGui::Text("%s", day);
-            }
+            ImGui::TableSetupColumn( day );
         }
+
+        ImGui::TableHeadersRow();
 
         // Fill in days that come before the first day of active month
         for(int i { 0 }; i < weekdayOfFirstday.iso_encoding()-1; ++i)
