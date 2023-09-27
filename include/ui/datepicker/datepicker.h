@@ -16,4 +16,4 @@ static inline int GetDaysInMonth(int year, int month) {
     return  days[month] + (int)(month == 1 && IsLeapYear(year));
 }
 
-bool DatePicker(const char* id, int* level, std::chrono::year_month_day* t);
+bool DatePicker(const char* id, int& level, std::chrono::year_month_day& t);

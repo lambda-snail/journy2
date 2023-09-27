@@ -54,6 +54,18 @@ void Application::Teardown()
 
 void Application::BuildUi()
 {
+    if(ImGui::BeginPopupModal("test"))
+    {
+        int l {0};
+
+        auto const now { floor<std::chrono::days>(std::chrono::system_clock::now()) };
+        std::chrono::year_month_day date {now };
+        DatePicker("Calendar", l, date);
+        ImGui::EndPopup();
+    }
+
+    ImGui::OpenPopup("test");
+
     ImGuiID vpDockSpace = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     static bool bShouldInitialize = true;
 
