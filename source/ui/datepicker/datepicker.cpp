@@ -30,6 +30,7 @@ namespace ImGuiExtensions {
 
         ImGui::PushID(id);
         ImGui::BeginGroup();
+        ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 });
 
         if(ImGui::Button(std::to_string(static_cast<int>(date.year())).c_str()))
         {
@@ -90,7 +91,7 @@ namespace ImGuiExtensions {
                 break;
         }
 
-
+        ImGui::PopStyleColor();
         ImGui::EndGroup();
         ImGui::PopID();
 
@@ -115,10 +116,30 @@ namespace ImGuiExtensions {
                 }
             }
 
+            // These are the actual days that we select in the calendar
+            auto currentButtonStyle { ImGui::GetStyleColorVec4(ImGuiCol_Button) };
+            auto dateInt { static_cast<unsigned int>(date.day()) };
             for (int i{1}; i <= static_cast<unsigned int>(lastDayOfMonth.day()); ++i)
             {
+                if(i == dateInt) // Highlight currently selected date
+                {
+                    ImGui::PopStyleColor();
+                }
+
                 if (ImGui::TableNextColumn()) {
-                    ImGui::Text("%i", i);
+                    if(ImGui::Button(std::to_string( i ).c_str()))
+                    {
+                        date = {
+                                date.year(),
+                                date.month(),
+                                std::chrono::day{ static_cast<unsigned int>(i) }
+                        };
+                    }
+                }
+
+                if(i == dateInt)
+                {
+                    ImGui::PushStyleColor(ImGuiCol_Button, currentButtonStyle);
                 }
             }
 
@@ -147,7 +168,8 @@ namespace ImGuiExtensions {
                         date = {
                             date.year(),
                             std::chrono::month{ static_cast<unsigned int>(i+1) },
-                            date.day() };
+                            date.day()
+                        };
 
                         level = DatePickerLevel::Days;
                         break;
@@ -172,7 +194,8 @@ namespace ImGuiExtensions {
                         date = {
                                 std::chrono::year{ i },
                                 date.month(),
-                                date.day() };
+                                date.day()
+                        };
 
                         level = DatePickerLevel::Months;
                         break;
