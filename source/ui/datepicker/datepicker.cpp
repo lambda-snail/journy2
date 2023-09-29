@@ -18,13 +18,6 @@ namespace ImGuiExtensions {
     static const int DaysPerWeek{ 7 };
     static const int MonthsPerYear{ 12 };
 
-/**
- * Index into the abbreviations array from a c-based index (Sunday is index 0).
- */
-    inline const char *getWeekdayAbbreviation(std::chrono::weekday const &wd) {
-        return DayNames[wd.iso_encoding() - 1];
-    }
-
     bool DatePicker(const char *id, DatePickerLevel &level, std::chrono::year_month_day &date) noexcept {
         using namespace std::chrono;
 
