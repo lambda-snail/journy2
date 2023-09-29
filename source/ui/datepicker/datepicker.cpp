@@ -128,6 +128,7 @@ namespace ImGuiExtensions {
                             date.day() };
 
                         level = DatePickerLevel::Days;
+                        break;
                     }
                 }
             }
