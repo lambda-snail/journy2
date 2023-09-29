@@ -58,7 +58,7 @@ void Application::BuildUi()
 
     if(ImGui::BeginPopupModal("Calendar"))
     {
-        DatePickerLevel l { DatePickerLevel::Days };
+        static DatePickerLevel l { DatePickerLevel::Days };
 
         auto const now { floor<std::chrono::days>(std::chrono::system_clock::now()) };
         static std::chrono::year_month_day date {now };

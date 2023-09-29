@@ -6,13 +6,16 @@ namespace ImGuiExtensions {
 
     static char const* MonthNames[] = {"January", "February", "March", "April", "May", "June", "July", "August",
                                        "September", "October", "November", "December"};
+    static char const* MonthNamesShort[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Augu",
+                                       "Sep", "Oct", "Nov", "Dec"};
     static char const* DayNames[] = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
 
     void SelectDay(std::chrono::year_month_day& date, std::chrono::year_month_day const &lastDayOfMonth,
                    std::chrono::weekday const &weekdayOfFirstDay, std::chrono::weekday const &weekdayOfLastDay) noexcept;
-    void SelectMonth(std::chrono::year_month_day& date);
+    void SelectMonth(std::chrono::year_month_day &date, DatePickerLevel &lvl);
 
-    static const int DaysPerWeek{7};
+    static const int DaysPerWeek{ 7 };
+    static const int MonthsPerYear{ 12 };
 
 /**
  * Index into the abbreviations array from a c-based index (Sunday is index 0).
@@ -36,7 +39,10 @@ namespace ImGuiExtensions {
         }
 
         ImGui::SameLine();
-        ImGui::Text("%s", MonthNames[static_cast<unsigned int>(date.month()) - 1]); // chrono::month index starts at 1
+        if(ImGui::Button(MonthNames[static_cast<unsigned int>(date.month()) - 1])) // chrono::month index starts at 1{
+        {
+            level = DatePickerLevel::Months;
+        }
 
         ImGui::SameLine();
         if (ImGui::ArrowButton("Down", ImGuiDir_Down)) {
@@ -55,7 +61,7 @@ namespace ImGuiExtensions {
                 SelectDay(date, lastDayOfMonth, weekdayOfFirstDay, weekdayOfLastDay);
                 break;
             case DatePickerLevel::Months:
-                SelectMonth(date);
+                SelectMonth(date, level);
                 break;
             default:
 
@@ -106,11 +112,27 @@ namespace ImGuiExtensions {
         }
     }
 
-    void SelectMonth(std::chrono::year_month_day &date)
+    void SelectMonth(std::chrono::year_month_day &date, DatePickerLevel &level)
     {
-        if (ImGui::BeginTable("Days", 3))
+        if (ImGui::BeginTable("Months", 3))
         {
+            for(int i { 0 }; i < MonthsPerYear; ++i)
+            {
+                if(ImGui::TableNextColumn())
+                {
+                    if(ImGui::Button(MonthNamesShort[i]))
+                    {
+                        date = {
+                            date.year(),
+                            std::chrono::month{ static_cast<unsigned int>(i+1) },
+                            date.day() };
 
+                        level = DatePickerLevel::Days;
+                    }
+                }
+            }
+
+            ImGui::EndTable();
         }
     }
 }
