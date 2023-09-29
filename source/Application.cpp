@@ -56,21 +56,27 @@ void Application::BuildUi()
 {
     using namespace ImGuiExtensions;
 
+    static bool done { false };
     auto const now { floor<std::chrono::days>(std::chrono::system_clock::now()) };
     static DatePickerLevel l { DatePickerLevel::Days };
     static std::chrono::year_month_day testDate { now };
 
-    static bool bSelectionDone { false };
-    if(not bSelectionDone)
+    if(not done)
     {
-        ImGui::OpenPopup("Calendar");
+        done = OpenDatePickerModal("Calendar", testDate);
     }
 
-    if(not bSelectionDone && ImGui::BeginPopupModal("Calendar"))
-    {
-        bSelectionDone = DatePicker("DatePicker", l, testDate);
-        ImGui::EndPopup();
-    }
+//    static bool bSelectionDone { false };
+//    if(not bSelectionDone)
+//    {
+//        ImGui::OpenPopup("Calendar");
+//    }
+//
+//    if(not bSelectionDone && ImGui::BeginPopupModal("Calendar"))
+//    {
+//        bSelectionDone = DatePicker("DatePicker", l, testDate);
+//        ImGui::EndPopup();
+//    }
 
     ImGuiID vpDockSpace = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     static bool bShouldInitialize = true;
