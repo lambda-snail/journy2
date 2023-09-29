@@ -12,7 +12,8 @@ namespace ImGuiExtensions {
 
     void SelectDay(std::chrono::year_month_day& date, std::chrono::year_month_day const &lastDayOfMonth,
                    std::chrono::weekday const &weekdayOfFirstDay, std::chrono::weekday const &weekdayOfLastDay) noexcept;
-    void SelectMonth(std::chrono::year_month_day &date, DatePickerLevel &lvl);
+    void SelectMonth(std::chrono::year_month_day &date, DatePickerLevel &level);
+    void SelectYear(std::chrono::year_month_day &date, DatePickerLevel &level);
 
     static const int DaysPerWeek{ 7 };
     static const int MonthsPerYear{ 12 };
@@ -30,23 +31,44 @@ namespace ImGuiExtensions {
         ImGui::PushID(id);
         ImGui::BeginGroup();
 
-        ImGui::Text("%i", static_cast<int>(date.year()));
-        ImGui::SameLine();
-
-        ImGui::SameLine();
-        if (ImGui::ArrowButton("Up", ImGuiDir_Up)) {
-            date -= months{1};
-        }
-
-        ImGui::SameLine();
-        if(ImGui::Button(MonthNames[static_cast<unsigned int>(date.month()) - 1])) // chrono::month index starts at 1{
+        if(ImGui::Button(std::to_string(static_cast<int>(date.year())).c_str()))
         {
-            level = DatePickerLevel::Months;
+            level = DatePickerLevel::Years;
         }
 
-        ImGui::SameLine();
-        if (ImGui::ArrowButton("Down", ImGuiDir_Down)) {
-            date += months{1};
+        // Display year related controls when selecting days
+        if(level == DatePickerLevel::Months)
+        {
+            ImGui::SameLine();
+            if (ImGui::ArrowButton("Up", ImGuiDir_Up)) {
+                date -= years{1};
+            }
+
+            ImGui::SameLine();
+            if (ImGui::ArrowButton("Down", ImGuiDir_Down)) {
+                date += years{1};
+            }
+        }
+
+        // Display month related controls when selecting days
+        if(level == DatePickerLevel::Days)
+        {
+            ImGui::SameLine();
+            if (ImGui::Button(
+                    MonthNames[static_cast<unsigned int>(date.month()) - 1])) // chrono::month index starts at 1{
+            {
+                level = DatePickerLevel::Months;
+            }
+
+            ImGui::SameLine();
+            if (ImGui::ArrowButton("Up", ImGuiDir_Up)) {
+                date -= months{1};
+            }
+
+            ImGui::SameLine();
+            if (ImGui::ArrowButton("Down", ImGuiDir_Down)) {
+                date += months{1};
+            }
         }
 
         ImGui::Separator();
@@ -64,7 +86,7 @@ namespace ImGuiExtensions {
                 SelectMonth(date, level);
                 break;
             default:
-
+                SelectYear(date, level);
                 break;
         }
 
@@ -128,6 +150,31 @@ namespace ImGuiExtensions {
                             date.day() };
 
                         level = DatePickerLevel::Days;
+                        break;
+                    }
+                }
+            }
+
+            ImGui::EndTable();
+        }
+    }
+
+    void SelectYear(std::chrono::year_month_day& date, DatePickerLevel& level) {
+        if (ImGui::BeginTable("Years", 5))
+        {
+            int selectedYear = static_cast<int>(date.year());
+            for(int i { selectedYear - 7 }; i <= selectedYear + 7; ++i)
+            {
+                if(ImGui::TableNextColumn())
+                {
+                    if(ImGui::Button(std::to_string(i).c_str()))
+                    {
+                        date = {
+                                std::chrono::year{ i },
+                                date.month(),
+                                date.day() };
+
+                        level = DatePickerLevel::Months;
                         break;
                     }
                 }
