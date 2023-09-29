@@ -11,19 +11,21 @@ namespace ImGuiExtensions {
     static char const* DayNames[] = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
 
     void SelectDay(std::chrono::year_month_day& date, std::chrono::year_month_day const &lastDayOfMonth,
-                   std::chrono::weekday const &weekdayOfFirstDay, std::chrono::weekday const &weekdayOfLastDay) noexcept;
-    void SelectMonth(std::chrono::year_month_day &date, DatePickerLevel &level);
-    void SelectYear(std::chrono::year_month_day &date, DatePickerLevel &level);
+                   std::chrono::weekday const &weekdayOfFirstDay, std::chrono::weekday const &weekdayOfLastDay,
+                   bool& isSelectionDone) noexcept;
+    void SelectMonth(std::chrono::year_month_day& date, DatePickerLevel& level);
+    void SelectYear(std::chrono::year_month_day& date, DatePickerLevel& level);
 
     static const int DaysPerWeek{ 7 };
     static const int MonthsPerYear{ 12 };
 
-    bool DatePicker(const char *id, DatePickerLevel &level, std::chrono::year_month_day &date) noexcept {
+    bool DatePicker(char const* id, DatePickerLevel &level, std::chrono::year_month_day &date) noexcept
+    {
         using namespace std::chrono;
 
         ImGui::PushID(id);
         ImGui::BeginGroup();
-        ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 });
+        ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 }); // Only care about alpha to hide button color
 
         if(ImGui::Button(std::to_string(static_cast<int>(date.year())).c_str()))
         {
@@ -71,16 +73,19 @@ namespace ImGuiExtensions {
         weekday weekdayOfFirstDay = sys_days{year_month_day{date.year() / date.month() / 1}};
         weekday weekdayOfLastDay = sys_days{lastDayOfMonth};
 
+        bool bIsSelectionDone { false };
         switch(level)
         {
             case DatePickerLevel::Days:
-                SelectDay(date, lastDayOfMonth, weekdayOfFirstDay, weekdayOfLastDay);
+                SelectDay(date, lastDayOfMonth, weekdayOfFirstDay, weekdayOfLastDay, bIsSelectionDone);
                 break;
             case DatePickerLevel::Months:
                 SelectMonth(date, level);
                 break;
-            default:
+            case DatePickerLevel::Years:
                 SelectYear(date, level);
+                break;
+            default:
                 break;
         }
 
@@ -88,12 +93,16 @@ namespace ImGuiExtensions {
         ImGui::EndGroup();
         ImGui::PopID();
 
-        return false;
+        return bIsSelectionDone;
     }
 
-    void SelectDay(std::chrono::year_month_day &date, std::chrono::year_month_day const &lastDayOfMonth,
-                   std::chrono::weekday const &weekdayOfFirstDay, std::chrono::weekday const &weekdayOfLastDay) noexcept
+    void SelectDay(std::chrono::year_month_day& date,
+                   std::chrono::year_month_day const& lastDayOfMonth,
+                   std::chrono::weekday const& weekdayOfFirstDay,
+                   std::chrono::weekday const& weekdayOfLastDay,
+                   bool& isSelectionDone) noexcept
     {
+        isSelectionDone = false;
         if (ImGui::BeginTable("Days", 7)) {
             for (auto const *day: DayNames) {
                 ImGui::TableSetupColumn(day);
@@ -127,6 +136,8 @@ namespace ImGuiExtensions {
                                 date.month(),
                                 std::chrono::day{ static_cast<unsigned int>(i) }
                         };
+
+                        isSelectionDone = true;
                     }
                 }
 

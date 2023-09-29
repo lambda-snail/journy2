@@ -6,6 +6,11 @@
 
 namespace ImGuiExtensions
 {
+    struct DatePickerOptions
+    {
+
+    };
+
     enum class DatePickerLevel
     {
         Days,
@@ -13,5 +18,5 @@ namespace ImGuiExtensions
         Years
     };
 
-    bool DatePicker(const char* id, DatePickerLevel& level, std::chrono::year_month_day& t) noexcept;
+    bool DatePicker(char const* id, DatePickerLevel& level, std::chrono::year_month_day& t) noexcept;
 }
