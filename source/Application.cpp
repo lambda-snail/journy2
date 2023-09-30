@@ -52,36 +52,33 @@ void Application::Teardown()
     m_Config.SaveFile(APPLICATION_CONFIG_FILE);
 }
 
+// Init docking
+void Application::BuildDockspaces(ImGuiID& vpDockSpaceID)
+{
+    ImGui::DockBuilderRemoveNode(vpDockSpaceID);
+    ImGui::DockBuilderAddNode(vpDockSpaceID);
+    ImGui::DockBuilderSetNodeSize(vpDockSpaceID, ImGui::GetMainViewport()->Size);
+
+    ImGui::DockBuilderSplitNode(vpDockSpaceID, ImGuiDir_Left, 0.2f, &m_VpLeftDock, &m_VpRightDock);
+    ImGui::DockBuilderSplitNode(m_VpRightDock, ImGuiDir_Right, 0.2f, &m_VpRightDock, &m_VpCenterDock);
+
+    ImGui::DockBuilderDockWindow("Entry List", m_VpLeftDock);
+    ImGui::DockBuilderDockWindow("Dear ImGui Demo", m_VpRightDock);
+    ImGui::DockBuilderDockWindow("Outline", m_VpRightDock);
+
+    ImGui::DockBuilderFinish(vpDockSpaceID);
+}
+
 void Application::BuildUi()
 {
     using namespace ImGuiExtensions;
 
-    ImGuiID vpDockSpace = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     static bool bShouldInitialize = true;
-
-    static ImGuiID vpLeftDock, vpRightDock, vpCenterDock;
-    if (bShouldInitialize){
+    ImGuiID vpDockSpaceId = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+    if (bShouldInitialize)
+    {
         bShouldInitialize = false;
-        ImGui::DockBuilderRemoveNode(vpDockSpace);
-        ImGui::DockBuilderAddNode(vpDockSpace);
-        ImGui::DockBuilderSetNodeSize(vpDockSpace, ImGui::GetMainViewport()->Size);
-
-        ImGui::DockBuilderSplitNode(vpDockSpace, ImGuiDir_Left, 0.2f, &vpLeftDock, &vpRightDock);
-        ImGui::DockBuilderSplitNode(vpRightDock, ImGuiDir_Right, 0.2f, &vpRightDock, &vpCenterDock);
-
-        ImGui::DockBuilderDockWindow("Entry List", vpLeftDock);
-        ImGui::DockBuilderDockWindow("Dear ImGui Demo", vpRightDock);
-        ImGui::DockBuilderDockWindow("Outline", vpRightDock);
-
-        for(auto const& entry : m_OpenEntries)
-        {
-            if(entry.second->IsOpen())
-            {
-                ImGui::DockBuilderDockWindow(entry.second->GetName().c_str(), vpCenterDock);
-            }
-        }
-
-        ImGui::DockBuilderFinish(vpDockSpace);
+        BuildDockspaces(vpDockSpaceId);
     }
 
     static todo::JournalEntry* selectedItem { nullptr };
@@ -139,7 +136,7 @@ void Application::BuildUi()
                     }
                     else
                     {
-                        m_OpenEntries[entry.getDate()] = std::make_unique<journy::ui::MarkdownEditor>(&entry, vpCenterDock);
+                        m_OpenEntries[entry.getDate()] = std::make_unique<journy::ui::MarkdownEditor>(&entry, m_VpCenterDock);
                     }
                 }
 

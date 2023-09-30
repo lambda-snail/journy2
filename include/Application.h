@@ -20,10 +20,10 @@ public:
     ~Application() = default;
 private:
     CSimpleIniA m_Config;
-    ImGuiIO& m_Io;
     bool bShouldClose { false };
 
     bool bShowDemoWindow {true };
+    ImGuiID m_VpLeftDock, m_VpRightDock, m_VpCenterDock;
 
     std::vector<todo::JournalEntry> m_JournalEntries;
 
@@ -34,4 +34,5 @@ private:
     std::map<std::chrono::year_month_day, std::unique_ptr<journy::ui::MarkdownEditor>> m_OpenEntries;
 
     void LoadConfiguration();
+    void BuildDockspaces(ImGuiID& vpDockSpaceID);
 };
