@@ -8,7 +8,7 @@
 
 class Application {
 public:
-    explicit Application(ImGuiIO& io) : m_Io(io), m_Db{nullptr} {};
+    explicit Application() : m_Db{nullptr} {};
 
     void Startup();
     void BuildUi();

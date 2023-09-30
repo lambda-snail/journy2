@@ -503,7 +503,7 @@ int main(int, char**)
     }
 
     // Our application
-    Application app{ io };
+    Application app;
     app.Startup();
 
     // Main loop

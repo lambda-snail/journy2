@@ -34,7 +34,7 @@ void Application::Startup()
 
     LoadConfiguration();
 
-    auto now = std::chrono::time_point<std::chrono::system_clock>::clock::now();
+    auto now = time_point<system_clock>::clock::now();
     auto today = year_month_day { floor<days>(now) };
 
     auto min = year_month_day { today.year() / January / 1 };
