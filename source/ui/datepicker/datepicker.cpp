@@ -6,7 +6,7 @@ namespace ImGuiExtensions {
 
     static char const* MonthNames[] = {"January", "February", "March", "April", "May", "June", "July", "August",
                                        "September", "October", "November", "December"};
-    static char const* MonthNamesShort[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Augu",
+    static char const* MonthNamesShort[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
                                        "Sep", "Oct", "Nov", "Dec"};
     static char const* DayNames[] = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
 
