@@ -105,7 +105,7 @@ namespace ImGuiExtensions {
             ImGui::OpenPopup(id);
         }
 
-        if(show && ImGui::BeginPopupModal(id))
+        if(ImGui::BeginPopupModal(id, &show))
         {
             bSelectionDone = DatePicker("DatePicker", level, t);
             if(bSelectionDone)

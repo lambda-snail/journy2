@@ -33,7 +33,8 @@ namespace ImGuiExtensions
 
     /**
      * Displays a date picker in a modal window with the given id. The function returns true when the selection is
-     * complete.
+     * complete. The date variable is not reset when the modal is canceled, so if a static variable is being used to
+     * store the date, and it is not reset, then the next time the modal opens it will retain the previous value.
      * @param id The id of the widget.
      * @param show Should the date picker be open?
      * @param t If OpenDatePickerModal returns true, this will be set to the selected date. If OpenDatePickerModal
