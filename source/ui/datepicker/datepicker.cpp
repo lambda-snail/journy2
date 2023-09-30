@@ -96,24 +96,29 @@ namespace ImGuiExtensions {
         return bIsSelectionDone;
     }
 
-    bool OpenDatePickerModal(const char *id, std::chrono::year_month_day &t) noexcept {
-        static bool bSelectionDone { false };
+    bool OpenDatePickerModal(const char *id, bool& show, std::chrono::year_month_day &t) noexcept {
+        bool bSelectionDone { false };
         static DatePickerLevel level { DatePickerLevel::Days };
 
-        if(not bSelectionDone)
+        if(show)
         {
             ImGui::OpenPopup(id);
         }
 
-        if(not bSelectionDone && ImGui::BeginPopupModal(id))
+        if(show && ImGui::BeginPopupModal(id))
         {
             bSelectionDone = DatePicker("DatePicker", level, t);
+            if(bSelectionDone)
+            {
+                ImGui::CloseCurrentPopup();
+            }
             ImGui::EndPopup();
         }
 
         // If done reset static variables
         if(bSelectionDone)
         {
+            show = false;
             bSelectionDone = false;
             level = DatePickerLevel::Days;
             return true;

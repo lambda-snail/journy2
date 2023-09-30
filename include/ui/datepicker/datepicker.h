@@ -35,9 +35,10 @@ namespace ImGuiExtensions
      * Displays a date picker in a modal window with the given id. The function returns true when the selection is
      * complete.
      * @param id The id of the widget.
+     * @param show Should the date picker be open?
      * @param t If OpenDatePickerModal returns true, this will be set to the selected date. If OpenDatePickerModal
      *  returns false this will contain an intermediate stage of selection.
      * @return true iff the selection is complete.
      */
-    bool OpenDatePickerModal(char const* id, std::chrono::year_month_day& t) noexcept;
+    bool OpenDatePickerModal(char const* id, bool& show, std::chrono::year_month_day& t) noexcept;
 }

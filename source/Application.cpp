@@ -56,26 +56,14 @@ void Application::BuildUi()
 {
     using namespace ImGuiExtensions;
 
-    static bool done { false };
-    auto const now { floor<std::chrono::days>(std::chrono::system_clock::now()) };
-    static DatePickerLevel l { DatePickerLevel::Days };
-    static std::chrono::year_month_day testDate { now };
-
-    if(not done)
-    {
-        done = OpenDatePickerModal("Calendar", testDate);
-    }
-
-//    static bool bSelectionDone { false };
-//    if(not bSelectionDone)
-//    {
-//        ImGui::OpenPopup("Calendar");
-//    }
+//    static bool done { false };
+//    auto const now { floor<std::chrono::days>(std::chrono::system_clock::now()) };
+//    static DatePickerLevel l { DatePickerLevel::Days };
+//    static std::chrono::year_month_day testDate { now };
 //
-//    if(not bSelectionDone && ImGui::BeginPopupModal("Calendar"))
+//    if(not done)
 //    {
-//        bSelectionDone = DatePicker("DatePicker", l, testDate);
-//        ImGui::EndPopup();
+//        done = OpenDatePickerModal("Calendar", testDate);
 //    }
 
     ImGuiID vpDockSpace = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
@@ -111,9 +99,11 @@ void Application::BuildUi()
         auto scale = journy::ui::GetDpiScaleFactor();
         float size = 32.f * scale;
         ImGui::BeginChild("Entry Commands", { 0.f, size });
+
+            static bool showDatePicker { false };
             if(ImGui::Button(ICON_MD_ADD, { size, size }))
             {
-                ImGui::OpenPopup("NewEntry");
+                showDatePicker = true;
             }
             journy::ui::AddTooltipWithDelay("Start a new journal entry", journy::ui::TooltipDelay::Normal);
 
@@ -121,45 +111,16 @@ void Application::BuildUi()
             ImGui::Button(ICON_MD_DELETE, { size, size });
             journy::ui::AddTooltipWithDelay("Delete a journal entry. Warning - cannot be undone!", journy::ui::TooltipDelay::Normal);
 
-            if(ImGui::BeginPopupModal("NewEntry"))
+            auto const now { floor<std::chrono::days>(std::chrono::system_clock::now()) };
+            static DatePickerLevel l { DatePickerLevel::Days };
+            static std::chrono::year_month_day date { now };
+
+            bool dateSelected = OpenDatePickerModal("Select Date", showDatePicker, date);
+            if(dateSelected)
             {
-                ImGui::Text("Choose a date for the entry");
-
-                static std::chrono::year_month_day today
-                {
-                    std::chrono::floor<std::chrono::days>(std::chrono::time_point<std::chrono::system_clock>::clock::now())
-                };
-
-                static int day { static_cast<int>( (unsigned int)today.day() ) };
-                ImGui::InputInt("Day", &day);
-                if(day < 1) day = 1;
-                if(day > 32) day = 32;
-
-                const char* items[] = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-                static int month = 0;
-                ImGui::Combo("Month", &month, items, IM_ARRAYSIZE(items));
-
-                static int year {2023};
-                ImGui::InputInt("Year", &year);
-                if(year < 1990) year = 1990;
-
-                bool create = ImGui::Button("Create"); ImGui::SameLine();
-                bool cancel = ImGui::Button("Cancel");
-
-                if(create)
-                {
-                    std::chrono::year_month_day date( std::chrono::day{static_cast<unsigned int>(day)} / (month+1) / year);
-                    todo::JournalEntry entry{ date, {} };
-                    m_Db->AddNewJournalEntry(entry);
-                    m_JournalEntries.push_back(entry);
-                }
-
-                if(create || cancel)
-                {
-                    ImGui::CloseCurrentPopup();
-                }
-
-                ImGui::EndPopup();
+                todo::JournalEntry entry{ date, {} };
+                m_Db->AddNewJournalEntry(entry);
+                m_JournalEntries.push_back(entry);
             }
 
         ImGui::EndChild();
@@ -206,7 +167,7 @@ void Application::BuildUi()
         this->m_Db->UpdateJournalEntryContent(entry);
     };
 
-    for(auto const& [date, editor] : m_OpenEntries)
+    for(auto const& [_, editor] : m_OpenEntries)
     {
         editor->BuildUi(saveEntryFunction);
     }
