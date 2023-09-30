@@ -4,13 +4,14 @@
 
 #include <memory>
 #include <sqlite3.h>
-#include <wx/datetime.h>
+#include <string>
+#include <chrono>
 
 namespace todo {
     class DatabaseManager
     {
     public:
-        explicit DatabaseManager(wxString const& path, bool shouldInitDb = false);
+        explicit DatabaseManager(std::string const& path, bool shouldInitDb = false);
         ~DatabaseManager();
 
         bool AddNewJournalEntry(JournalEntry& entry) const;
@@ -22,9 +23,9 @@ namespace todo {
         [[nodiscard]] std::vector<int> GetListOfJournalYears() const;
 
         [[nodiscard]] std::vector<JournalEntry>
-        GetAllJournalEntriesBetween(wxDateTime min, wxDateTime max);
+        GetAllJournalEntriesBetween(std::chrono::year_month_day min, std::chrono::year_month_day max);
 
-        static const wxString config_last_db_location;
+        static const std::string config_last_db_location;
     private:
         sqlite3* p_Db;
 
@@ -36,6 +37,6 @@ namespace todo {
         void InitQueries();
         void ClearQueries();
 
-        wxString database_path;
+        std::string database_path;
     };
 }

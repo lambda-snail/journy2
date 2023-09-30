@@ -14,37 +14,37 @@ todo::JournalEntry::JournalEntry(JournalEntry&& rhs) noexcept
     Content = rhs.Content;
 }
 
-todo::JournalEntry::JournalEntry(int id, wxDateTime date, wxString const& content) : Id{id}, Date{date}, Content(content) {}
+todo::JournalEntry::JournalEntry(long long id, std::chrono::year_month_day date, std::string const& content) : Id{id}, Date{date}, Content(content) {}
 
-todo::JournalEntry::JournalEntry(wxDateTime date, wxString const& content) : Id{-1}, Date{date}, Content(content) {}
+todo::JournalEntry::JournalEntry(std::chrono::year_month_day date, std::string const& content) : Id{-1}, Date{date}, Content(content) {}
 
-wxDateTime todo::JournalEntry::getDate() const
+std::chrono::year_month_day todo::JournalEntry::getDate() const
 {
     return Date;
 }
 
-void todo::JournalEntry::setDate(wxDateTime const& newDate)
+void todo::JournalEntry::setDate(std::chrono::year_month_day const& newDate)
 {
     if (Date == newDate)
         return;
     Date = newDate;
 }
 
-wxString todo::JournalEntry::getContent() const
+std::string& todo::JournalEntry::getContent()
 {
     return Content;
 }
 
-void todo::JournalEntry::setContent(wxString const& newContent)
+void todo::JournalEntry::setContent(std::string const& newContent)
 {
     if (Content == newContent)
         return;
     Content = newContent;
 }
 
-wxString todo::JournalEntry::toString() const
+std::string todo::JournalEntry::toString() const
 {
-    return Date.FormatDate();
+    return std::format("{}", Date);
 }
 
 long long todo::JournalEntry::getId() const
@@ -58,5 +58,9 @@ void todo::JournalEntry::setId(long long newId)
     if (Id == newId)
         return;
     Id = newId;
+}
+
+std::string const& todo::JournalEntry::getContent() const {
+    return Content;
 }
 

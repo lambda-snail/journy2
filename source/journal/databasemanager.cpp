@@ -1,13 +1,15 @@
+#include <chrono>
+#include <iostream>
+#include <cassert>
+
 #include "journal/databasemanager.h"
 #include "journal/entry.h"
-#include "wx/log.h"
-#include "wx/intl.h"
 
-todo::DatabaseManager::DatabaseManager(const wxString &path, bool shouldInitDb)
+todo::DatabaseManager::DatabaseManager(const std::string &path, bool shouldInitDb)
 {
     if( SQLITE_OK != sqlite3_open(path.c_str(), &p_Db))
     {
-        wxLogError("Unable to open database on path: " + path);
+        //wxLogError("Unable to open database on path: " + path);
     }
 
     if(shouldInitDb)
@@ -22,7 +24,7 @@ todo::DatabaseManager::DatabaseManager(const wxString &path, bool shouldInitDb)
 
         if(status != SQLITE_OK)
         {
-            wxLogError("Unable to initialize database at " + path + ". exec returned with code " + std::to_string(status));
+            //wxLogError("Unable to initialize database at " + path + ". exec returned with code " + std::to_string(status));
         }
     }
 
@@ -39,14 +41,8 @@ bool todo::DatabaseManager::AddNewJournalEntry(JournalEntry &entry) const
 {
     sqlite3_stmt* sql = p_CreateJournalEntiresQuery;
 
-    wxCharBuffer strStringValue = entry.getContent().ToUTF8();
-    const char* localStringValue = strStringValue;
-
-    wxCharBuffer dateStringValue = entry.getDate().FormatISODate().ToUTF8();
-    const char* localDateValue = dateStringValue;
-
-    sqlite3_bind_text(sql, 1, localStringValue, -1, SQLITE_STATIC);
-    sqlite3_bind_text(sql, 2, localDateValue, -1, SQLITE_STATIC);
+    sqlite3_bind_text(sql, 1, entry.getContent().c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(sql, 2, entry.toString().c_str(), -1, SQLITE_TRANSIENT);
 
     int status = sqlite3_step( sql );
     switch(status)
@@ -55,7 +51,7 @@ bool todo::DatabaseManager::AddNewJournalEntry(JournalEntry &entry) const
             entry.setId( sqlite3_last_insert_rowid(p_Db) );
             break;
         default:
-            wxLogError("Unhandled status code in sql query: " + wxString::Format(wxT("%i"), status));
+            //wxLogError("Unhandled status code in sql query: " + wxString::Format(wxT("%i"), status));
             break;
     }
 
@@ -85,22 +81,18 @@ std::vector<int> todo::DatabaseManager::GetListOfJournalYears() const
         return years_vector;
     }
 
-    wxLogError(error_message);
+    //wxLogError(error_message);
     return {};
 }
 
 std::vector<todo::JournalEntry>
-todo::DatabaseManager::GetAllJournalEntriesBetween(wxDateTime min, wxDateTime max)
+todo::DatabaseManager::GetAllJournalEntriesBetween(std::chrono::year_month_day min, std::chrono::year_month_day max)
 {
-    wxCharBuffer minValueBuffer = min.FormatISODate().ToUTF8();
-    const char* minValueString = minValueBuffer;
-
-    wxCharBuffer maxValueBuffer = max.FormatISODate().ToUTF8();
-    const char* maxValueString = maxValueBuffer;
+    assert(min < max);
 
     auto* sql = p_GetEntriesBetweenDatesQuery;
-    sqlite3_bind_text(sql, 1, minValueString, -1, SQLITE_STATIC);
-    sqlite3_bind_text(sql, 2, maxValueString, -1, SQLITE_STATIC);
+    sqlite3_bind_text(sql, 1, std::format("{:%F}", min).c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(sql, 2, std::format("{:%F}", max).c_str(), -1, SQLITE_TRANSIENT);
 
     std::vector<JournalEntry> entries;
     int status = sqlite3_step( sql );
@@ -110,8 +102,11 @@ todo::DatabaseManager::GetAllJournalEntriesBetween(wxDateTime min, wxDateTime ma
         unsigned char const* date_str = sqlite3_column_text(sql, 1);
         unsigned char const* content_str = sqlite3_column_text(sql, 2);
 
-        wxDateTime date; date.ParseDate(date_str);
-        entries.emplace_back(id, date, content_str);
+        std::stringstream s(reinterpret_cast<char const*>(date_str));
+        std::chrono::year_month_day ymd{};
+        std::chrono::from_stream(s , "%F", ymd);
+
+        entries.emplace_back(id, ymd, reinterpret_cast<char const*>(content_str));
 
         status = sqlite3_step( sql );
     }
@@ -125,24 +120,22 @@ todo::DatabaseManager::GetAllJournalEntriesBetween(wxDateTime min, wxDateTime ma
     }
     else
     {
-        wxLogError(sqlite3_errmsg(p_Db));
+        //wxLogError(sqlite3_errmsg(m_Db));
+        std::cout << sqlite3_errmsg(p_Db) << std::endl;
         return {};
     }
 }
 
 void todo::DatabaseManager::UpdateJournalEntryContent(JournalEntry const& entry) const
 {
-    wxCharBuffer contentBuffer = entry.getContent().ToUTF8();
-    const char* contentString = contentBuffer;
-
     auto* sql = p_UpdateEntryContentQuery;
-    sqlite3_bind_text(sql, 1, contentString, -1, SQLITE_STATIC);
+    sqlite3_bind_text(sql, 1, entry.getContent().c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_int(sql, 2, static_cast<int>(entry.getId()));
 
     int status = sqlite3_step( sql );
     if(status != SQLITE_DONE)
     {
-        wxLogError(sqlite3_errmsg(p_Db));
+        //wxLogError(sqlite3_errmsg(m_Db));
     }
 
     sqlite3_clear_bindings( sql );
@@ -157,7 +150,7 @@ bool todo::DatabaseManager::DeleteJournalEntry(JournalEntry const& entry) const
     int status = sqlite3_step( sql );
     if(status != SQLITE_DONE)
     {
-        wxLogError(sqlite3_errmsg(p_Db));
+        //wxLogError(sqlite3_errmsg(m_Db));
         return false;
     }
 
