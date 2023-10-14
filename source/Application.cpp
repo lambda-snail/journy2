@@ -41,10 +41,6 @@ void Application::Startup()
     auto max = year_month_day { today.year() / December / 31 };
 
     m_JournalEntries = m_Db->GetAllJournalEntriesBetween(min, max);
-    for(auto const& e : m_JournalEntries)
-    {
-        std::cout << e.toString() << std::endl;
-    }
 }
 
 void Application::Teardown()
